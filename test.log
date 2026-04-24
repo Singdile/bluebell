@@ -1,0 +1,45 @@
+{"level":"info","ts":"2026-04-24T20:30:27.417+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-24T20:30:27.418+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-24T20:30:27.419+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"info","ts":"2026-04-24T20:33:18.969+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-24T20:33:18.970+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-24T20:33:18.970+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"info","ts":"2026-04-24T20:33:29.157+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00011763}
+{"level":"info","ts":"2026-04-25T11:04:12.953+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T11:04:12.954+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T11:04:12.954+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"info","ts":"2026-04-25T11:04:51.625+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000179712}
+{"level":"error","ts":"2026-04-25T11:04:59.652+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.Repassword' Error:Field validation for 'Repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T11:04:59.652+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000099053}
+{"level":"info","ts":"2026-04-25T11:05:30.432+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000294936}
+{"level":"error","ts":"2026-04-25T11:05:39.955+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.Email' Error:Field validation for 'Email' failed on the 'email' tag"}
+{"level":"info","ts":"2026-04-25T11:05:39.955+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000121397}
+{"level":"info","ts":"2026-04-25T13:42:00.819+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T13:42:00.819+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T13:42:00.820+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"error","ts":"2026-04-25T13:42:11.961+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.email' Error:Field validation for 'email' failed on the 'email' tag"}
+{"level":"info","ts":"2026-04-25T13:42:11.961+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000119379}
+{"level":"info","ts":"2026-04-25T13:43:28.336+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T13:43:28.336+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T13:43:28.337+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"error","ts":"2026-04-25T13:43:42.814+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:43:42.814+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000326336}
+{"level":"info","ts":"2026-04-25T13:46:15.580+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T13:46:15.580+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T13:46:15.581+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"error","ts":"2026-04-25T13:46:18.146+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:46:18.146+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000262411}
+{"level":"error","ts":"2026-04-25T13:46:26.601+0800","caller":"controllers/user.go:17","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:46:26.601+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000107462}
+{"level":"info","ts":"2026-04-25T13:54:00.035+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T13:54:00.036+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T13:54:00.036+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"error","ts":"2026-04-25T13:54:07.550+0800","caller":"controllers/user.go:18","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:54:07.550+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000224269}
+{"level":"info","ts":"2026-04-25T13:55:47.756+0800","caller":"bluebell/main.go:27","msg":"logger init success"}
+{"level":"info","ts":"2026-04-25T13:55:47.757+0800","caller":"bluebell/main.go:35","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-25T13:55:47.758+0800","caller":"bluebell/main.go:43","msg":"init redis success"}
+{"level":"error","ts":"2026-04-25T13:55:51.359+0800","caller":"controllers/user.go:18","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:55:51.359+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000235}
+{"level":"error","ts":"2026-04-25T13:56:12.565+0800","caller":"controllers/user.go:18","msg":"获取请求参数失败","error":"Key: 'ParamSignUp.repassword' Error:Field validation for 'repassword' failed on the 'eqfield' tag"}
+{"level":"info","ts":"2026-04-25T13:56:12.565+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00006109}

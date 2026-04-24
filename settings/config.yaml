@@ -1,0 +1,23 @@
+app:
+    appname: "web_app"
+    version: "v0.0.1"
+    port: 8080
+
+log:
+    filename: "./test.log"
+    level: "info"
+
+mysql:
+    user: "root"
+    password: "123456"
+    host: "127.0.0.1"
+    port: 3306
+    dbname: "sql_demo"
+
+redis:
+    host: "127.0.0.1"
+    port: 6379
+    password: ""
+    poolsize: 20
+    protocol: 2
+    db: 0
