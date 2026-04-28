@@ -1,5 +1,5 @@
 app:
-    appname: "web_app"
+    appname: "bluebell"
     version: "v0.0.1"
     port: 8080
 
@@ -12,7 +12,7 @@ mysql:
     password: "123456"
     host: "127.0.0.1"
     port: 3306
-    dbname: "sql_demo"
+    dbname: "bluebell"
 
 redis:
     host: "127.0.0.1"
@@ -21,3 +21,7 @@ redis:
     poolsize: 20
     protocol: 2
     db: 0
+
+snowflake:
+    start_time: "2026-04-28"
+    machine_id: 1

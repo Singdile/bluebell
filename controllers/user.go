@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bluebell/logic"
 	"bluebell/models"
 	"fmt"
 	"net/http"
@@ -27,13 +28,26 @@ func SignUp(ctx *gin.Context) {
 		}
 
 		//ValidatorErros,翻译之后再返回
-		ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
+		if trans != nil {
+			ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
+		} else {
+			ctx.JSON(http.StatusOK, gin.H{"msg": errs.Error()})
+		}
 		return
 	}
 
 	fmt.Printf("user: %v\n", param)
-	//用户注册
-	// logic.SignUp()
+	//业务处理, 用户注册
+	if err := logic.SignUp(param); err != nil {
+		fmt.Printf("插入用户数据失败,err: %v", err)
+		zap.L().Error("插入用户数据失败", zap.Error(err))
+		ctx.JSON(http.StatusOK, gin.H{
+			"msg": "服务器内部错误",
+			"err": err.Error(),
+		})
+
+		return
+	}
 	//返回响应
 	ctx.JSON(http.StatusOK, gin.H{"msg": "success"})
 

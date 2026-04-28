@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"bluebell/settings"
 	"errors"
 	"fmt"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -22,12 +22,12 @@ func Init() (err error) {
 	encodeconfig := zap.NewProductionEncoderConfig()
 	encodeconfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
-	encoder := zapcore.NewJSONEncoder(encodeconfig)                                                    //如何写入文件
-	file, _ := os.OpenFile(viper.GetString("log.filename"), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644) //写入什么日志文件
+	encoder := zapcore.NewJSONEncoder(encodeconfig)                                                     //如何写入文件
+	file, _ := os.OpenFile(settings.Conf.Logconfig.Filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644) //写入什么日志文件
 	writesyncer := zapcore.AddSync(file)
 
 	var l = new(zapcore.Level)
-	level := viper.Get("log.level").(string)
+	level := settings.Conf.Logconfig.Level
 	err = l.UnmarshalText([]byte(level))
 	if err != nil {
 		return err

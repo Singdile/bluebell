@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Appconfig      Appconfig      `mapstructure:"app"`
-	Logconfig      Logconfig      `mapstructure:"log"`
-	Databaseconfig Databaseconfig `mapstructure:"mysql"`
-	Redisconfig    Redisconfig    `mapstructure:"redis"`
+	Appconfig       Appconfig       `mapstructure:"app"`
+	Logconfig       Logconfig       `mapstructure:"log"`
+	Databaseconfig  Databaseconfig  `mapstructure:"mysql"`
+	Redisconfig     Redisconfig     `mapstructure:"redis"`
+	Snowflakeconfig Snowflakeconfig `mapstructure:"snowflake"`
 }
 
 type Appconfig struct {
@@ -40,6 +41,11 @@ type Redisconfig struct {
 	Poolsize int    `mapstructure:"poolsize"`
 	Protocol int    `mapstructure:"protocol"`
 	Db       int    `mapstructure:"db"`
+}
+
+type Snowflakeconfig struct {
+	StartTime string `mapstructure:"start_time"`
+	MachineID int64  `mapstructure:"machine_id"`
 }
 
 // 设置一个全局的配置变量

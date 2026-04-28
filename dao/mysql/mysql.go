@@ -1,14 +1,14 @@
 package mysql
 
 import (
-	"database/sql"
+	"bluebell/settings"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql" // 触发驱动注册,将MySql的连接逻辑挂载到标准库database/sql引擎上
-	"web_app/settings"
+	"github.com/jmoiron/sqlx"
 )
 
-var db *sql.DB
+var db *sqlx.DB
 
 func Init() (err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
@@ -19,7 +19,7 @@ func Init() (err error) {
 		settings.Conf.Databaseconfig.Dbname,
 	)
 
-	db, err = sql.Open("mysql", dsn)
+	db, err = sqlx.Open("mysql", dsn)
 
 	if err != nil {
 		return err
