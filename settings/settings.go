@@ -24,6 +24,7 @@ type Appconfig struct {
 type Logconfig struct {
 	Filename string `mapstructure:"filename"`
 	Level    string `mapstructure:"level"`
+	Mode     string `mapstructure:"mode"`
 }
 
 type Databaseconfig struct {

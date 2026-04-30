@@ -6,6 +6,7 @@ app:
 log:
     filename: "./test.log"
     level: "info"
+    mode: "dev" # dev(console+file), prod(only file)
 
 mysql:
     user: "root"

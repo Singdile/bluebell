@@ -99,3 +99,26 @@
 {"level":"info","ts":"2026-04-28T16:59:12.617+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
 {"level":"info","ts":"2026-04-28T16:59:12.617+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
 {"level":"info","ts":"2026-04-28T16:59:20.423+0800","caller":"logger/logger.go:74","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.054627372}
+{"level":"info","ts":"2026-04-29T13:40:00.344+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-29T13:40:00.363+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-29T13:40:00.367+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-04-29T13:40:00.367+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"error","ts":"2026-04-29T13:40:18.929+0800","caller":"controllers/user.go:43","msg":"插入用户数据失败","error":"用户已经存在"}
+{"level":"info","ts":"2026-04-29T13:40:18.929+0800","caller":"logger/logger.go:91","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.004519342}
+{"level":"info","ts":"2026-04-30T12:05:16.335+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T12:05:16.340+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"error","ts":"2026-04-30T12:05:18.416+0800","caller":"bluebell/main.go:40","msg":"failed to init redis","error":"dial tcp 127.0.0.1:6379: connect: connection refused"}
+{"level":"info","ts":"2026-04-30T12:08:21.165+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T12:08:21.165+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"error","ts":"2026-04-30T12:08:23.241+0800","caller":"bluebell/main.go:40","msg":"failed to init redis","error":"dial tcp 127.0.0.1:6379: connect: connection refused"}
+{"level":"info","ts":"2026-04-30T12:11:46.575+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T12:11:46.576+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"error","ts":"2026-04-30T12:11:48.652+0800","caller":"bluebell/main.go:40","msg":"failed to init redis","error":"dial tcp 127.0.0.1:6379: connect: connection refused"}
+{"level":"info","ts":"2026-04-30T12:14:11.491+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T12:14:11.491+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-30T12:14:11.492+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-04-30T12:14:11.492+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-04-30T12:17:14.786+0800","caller":"logger/logger.go:91","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.055663821}
+{"level":"info","ts":"2026-04-30T12:17:28.276+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053473877}
+{"level":"error","ts":"2026-04-30T12:17:38.004+0800","caller":"controllers/user.go:73","msg":"验证失败","error":"验证失败"}
+{"level":"info","ts":"2026-04-30T12:17:38.004+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.055492087}

@@ -52,3 +52,36 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"msg": "success"})
 
 }
+
+// Login 登陆
+func Login(ctx *gin.Context) {
+	//获取登录用户信息
+	param := new(models.ParamLogin)
+
+	if err := ctx.ShouldBindJSON(param); err != nil {
+		zap.L().Error("解析用户参数失败", zap.Error(err))
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "解析用户参数失败",
+			"err":  err.Error(),
+		})
+		return
+	}
+
+	// 业务逻辑处理
+	// 验证用户信息是否合法
+	if err := logic.Login(param); err != nil {
+		zap.L().Error("验证失败", zap.Error(err))
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 401,
+			"msg":  "登录信息验证失败",
+			"err":  err.Error(),
+		})
+		return
+	}
+	//返回响应
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"msg":  "login success",
+	})
+}

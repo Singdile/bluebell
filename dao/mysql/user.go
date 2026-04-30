@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"bluebell/models"
+	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -42,8 +43,38 @@ func checkPasswordHash(password, hash string) bool {
 	return true
 }
 
+// VerifyUserLogin 验证用户登录信息与数据库记录是否一致
+func VerifyUserLogin(username string, password string) (err error) {
+	//检查用户是否存在
+	exist, err := CheckUserExist(username)
+	if !exist {
+		return errors.New("用户不存在")
+	}
+
+	//验证密码是否一致
+	hashpassword, err := getPasswordByName(username)
+	if err != nil {
+		return err
+	}
+
+	if checkPasswordHash(password, hashpassword) {
+		return nil
+	} else {
+		return errors.New("密码错误,验证失败")
+	}
+}
+
 // 查询用户
-func SelectUserByName() {}
+func getPasswordByName(username string) (string, error) {
+	sqlstr := "select password from user where username = ?"
+	password := new(string)
+
+	if err := db.Get(&password, sqlstr, username); err != nil {
+		return "", errors.New("failed to get password")
+	}
+
+	return *password, nil
+}
 
 // 查询用户是否存在
 func CheckUserExist(username string) (bool, error) {

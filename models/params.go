@@ -7,3 +7,9 @@ type ParamSignUp struct {
 	Password   string `json:"password" binding:"required"`
 	Repassword string `json:"repassword" binding:"required,eqfield=Password"`
 }
+
+// 定义登录时的请求参数结构体
+type ParamLogin struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

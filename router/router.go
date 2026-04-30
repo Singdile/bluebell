@@ -22,6 +22,7 @@ func SetupRouter() (r *gin.Engine) {
 	//注册路由
 	//用户注册
 	r.POST("/register", controllers.SignUp)
+	r.POST("/login", controllers.Login)
 
 	return
 }

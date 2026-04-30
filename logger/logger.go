@@ -22,10 +22,11 @@ func Init() (err error) {
 	encodeconfig := zap.NewProductionEncoderConfig()
 	encodeconfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
-	encoder := zapcore.NewJSONEncoder(encodeconfig)                                                     //如何写入文件
+	//指定日志文件
 	file, _ := os.OpenFile(settings.Conf.Logconfig.Filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644) //写入什么日志文件
 	writesyncer := zapcore.AddSync(file)
 
+	//记录的级别
 	var l = new(zapcore.Level)
 	level := settings.Conf.Logconfig.Level
 	err = l.UnmarshalText([]byte(level))
@@ -33,9 +34,25 @@ func Init() (err error) {
 		return err
 	}
 
-	core := zapcore.NewCore(encoder, writesyncer, zapcore.DebugLevel)
+	//根据mode判断是否添加控制台输出
+	mode := settings.Conf.Logconfig.Mode
+	var lg *zap.Logger
+	if mode == "dev" {
+		//开发环境: 日志输出到console + file
+		consoleEncoder := zapcore.NewConsoleEncoder(encodeconfig)
+		consoleCore := zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), l)
+		fileEncoder := zapcore.NewJSONEncoder(encodeconfig)
+		filecore := zapcore.NewCore(fileEncoder, writesyncer, l)
 
-	lg := zap.New(core, zap.AddCaller()) //选项显示调用的函数
+		//合并两个core
+		core := zapcore.NewTee(consoleCore, filecore)
+		lg = zap.New(core, zap.AddCaller())
+	} else {
+		//生产环境: 日志仅输出到 file
+		fileEncoder := zapcore.NewJSONEncoder(encodeconfig)
+		filecore := zapcore.NewCore(fileEncoder, writesyncer, l)
+		lg = zap.New(filecore, zap.AddCaller())
+	}
 
 	//zap.AddCaller 指定显示调用方函数的信息
 	zap.ReplaceGlobals(lg) // 替换掉zap实例中维护的全局的  zap.Logger, 在其他地方可以通过zap.L()访问到
