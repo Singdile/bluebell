@@ -3,7 +3,6 @@ package controllers
 import (
 	"bluebell/logic"
 	"bluebell/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -36,21 +35,16 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Printf("user: %v\n", param)
 	//业务处理, 用户注册
 	if err := logic.SignUp(param); err != nil {
-		fmt.Printf("插入用户数据失败,err: %v", err)
 		zap.L().Error("插入用户数据失败", zap.Error(err))
-		ctx.JSON(http.StatusOK, gin.H{
-			"msg": "服务器内部错误",
-			"err": err.Error(),
-		})
-
+		//返回响应,服务器内部错误
+		FailWithDefault(ctx, ErrInternal)
 		return
 	}
-	//返回响应
-	ctx.JSON(http.StatusOK, gin.H{"msg": "success"})
 
+	//返回响应
+	Success(ctx, nil)
 }
 
 // Login 登陆
@@ -58,13 +52,20 @@ func Login(ctx *gin.Context) {
 	//获取登录用户信息
 	param := new(models.ParamLogin)
 
-	if err := ctx.ShouldBindJSON(param); err != nil {
-		zap.L().Error("解析用户参数失败", zap.Error(err))
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 500,
-			"msg":  "解析用户参数失败",
-			"err":  err.Error(),
-		})
+	if err := ctx.ShouldBind(param); err != nil {
+		zap.L().Error("参数绑定失败", zap.Error(err))
+
+		// 断言是否是validator的验证错误
+		_, ok := err.(*validator.InvalidValidationError)
+
+		if !ok {
+			// validator解析错误
+			FailWithDefault(ctx, ErrInvalidJSON)
+			return
+		}
+
+		// validator 的验证错误， 比如某个参数为空了/ 或者两个参数不等
+		FailWithDefault(ctx, ErrValidation)
 		return
 	}
 
@@ -72,16 +73,10 @@ func Login(ctx *gin.Context) {
 	// 验证用户信息是否合法
 	if err := logic.Login(param); err != nil {
 		zap.L().Error("验证失败", zap.Error(err))
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 401,
-			"msg":  "登录信息验证失败",
-			"err":  err.Error(),
-		})
+		FailWithDefault(ctx, ErrValidation)
 		return
 	}
-	//返回响应
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "login success",
-	})
+
+	// 登录成功
+	Success(ctx, nil)
 }

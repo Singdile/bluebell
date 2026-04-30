@@ -122,3 +122,21 @@
 {"level":"info","ts":"2026-04-30T12:17:28.276+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053473877}
 {"level":"error","ts":"2026-04-30T12:17:38.004+0800","caller":"controllers/user.go:73","msg":"验证失败","error":"验证失败"}
 {"level":"info","ts":"2026-04-30T12:17:38.004+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.055492087}
+{"level":"info","ts":"2026-04-30T15:49:40.012+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T15:49:40.013+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-30T15:49:40.014+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-04-30T15:49:40.014+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-04-30T15:50:17.831+0800","caller":"logger/logger.go:91","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.054507953}
+{"level":"info","ts":"2026-04-30T15:50:44.101+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053012126}
+{"level":"error","ts":"2026-04-30T15:50:52.360+0800","caller":"controllers/user.go:56","msg":"参数绑定失败","error":"invalid character '}' looking for beginning of object key string"}
+{"level":"info","ts":"2026-04-30T15:50:52.360+0800","caller":"logger/logger.go:91","msg":"/login","status":400,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00015106}
+{"level":"info","ts":"2026-04-30T15:51:05.102+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.0534589}
+{"level":"error","ts":"2026-04-30T15:51:10.834+0800","caller":"controllers/user.go:56","msg":"参数绑定失败","error":"invalid character '}' looking for beginning of object key string"}
+{"level":"info","ts":"2026-04-30T15:51:10.834+0800","caller":"logger/logger.go:91","msg":"/login","status":400,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000081533}
+{"level":"info","ts":"2026-04-30T15:52:18.210+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-04-30T15:52:18.210+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-04-30T15:52:18.211+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-04-30T15:52:18.211+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"error","ts":"2026-04-30T15:52:23.343+0800","caller":"controllers/user.go:56","msg":"参数绑定失败","error":"invalid character '}' looking for beginning of object key string"}
+{"level":"info","ts":"2026-04-30T15:52:23.343+0800","caller":"logger/logger.go:91","msg":"/login","status":400,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000206148}
+{"level":"info","ts":"2026-04-30T15:52:29.853+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.052682609}
