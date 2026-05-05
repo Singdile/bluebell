@@ -10,16 +10,13 @@ import "net/http"
 const (
 	// ==================== 参数验证错误 ====================
 	// HTTP 400 Bad Request
-
-	ErrValidation   = "validation_error" // 参数验证失败
-	ErrInvalidParam = "invalid_param"    // 请求参数错误
-	ErrInvalidJSON  = "invalid_json"     // JSON解析失败
-	ErrMissingField = "missing_field"    // 缺少必填字段
+	ErrValidation  = "validation_error" // JSON格式没问题，参数不符合要求
+	ErrInvalidJSON = "invalid_json"     // JSON格式有问题
 
 	// ==================== 认证错误 ====================
 	// HTTP 401 Unauthorized
 
-	ErrUnauthorized = "unauthorized"  // 未认证
+	ErrUnauthorized = "unauthorized"  // 未认证,也即用户未登录
 	ErrInvalidToken = "invalid_token" // Token无效
 	ErrTokenExpired = "token_expired" // Token过期
 	ErrLoginFailed  = "login_failed"  // 登录失败
@@ -64,7 +61,7 @@ const (
 func getHTTPStatus(errorType string) int {
 	switch errorType {
 	// 参数验证错误 -> 400
-	case ErrValidation, ErrInvalidParam, ErrInvalidJSON, ErrMissingField:
+	case ErrValidation, ErrInvalidJSON:
 		return http.StatusBadRequest
 
 	// 认证错误 -> 401
@@ -103,9 +100,7 @@ func getHTTPStatus(errorType string) int {
 // 可用于快速调用，无需每次都传入message
 var errorMsgMap = map[string]string{
 	ErrValidation:   "参数验证失败",
-	ErrInvalidParam: "请求参数错误",
 	ErrInvalidJSON:  "请求参数格式错误,请检查输入",
-	ErrMissingField: "缺少必填字段",
 	ErrUnauthorized: "未认证，请先登录",
 	ErrInvalidToken: "认证信息无效,请重新登录",
 	ErrTokenExpired: "登录已过期,请重新登录",

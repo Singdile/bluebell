@@ -3,6 +3,7 @@ package controllers
 import (
 	"bluebell/logic"
 	"bluebell/models"
+	"bluebell/pkg/jwt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,21 +19,23 @@ func SignUp(ctx *gin.Context) {
 		zap.L().Error("获取请求参数失败", zap.Error(err))
 
 		//转换为validator.ValidatorErrors类型的error 方便，转为为中文的错误表示
+		// ValidationErrors 表示验证错误，而非json格式错误
 		errs, ok := err.(validator.ValidationErrors)
 
-		//非ValidatorErrors,直接返回
-		if !ok {
-			ctx.JSON(http.StatusOK, gin.H{"msg": "请求参数有误", "err": err.Error()})
+		// ok == ture 表示参数错误，而非SignUp
+		if ok {
+			//ValidatorErros,翻译之后再返回
+			if trans != nil {
+				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
+			} else {
+				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Error()})
+			}
+			return
+		} else { // ok == false  表示是JSON格式错误
+			FailWithDefault(ctx, ErrInvalidJSON)
 			return
 		}
 
-		//ValidatorErros,翻译之后再返回
-		if trans != nil {
-			ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
-		} else {
-			ctx.JSON(http.StatusOK, gin.H{"msg": errs.Error()})
-		}
-		return
 	}
 
 	//业务处理, 用户注册
@@ -56,16 +59,16 @@ func Login(ctx *gin.Context) {
 		zap.L().Error("参数绑定失败", zap.Error(err))
 
 		// 断言是否是validator的验证错误
-		_, ok := err.(*validator.InvalidValidationError)
+		//  InvalidValidationError - 表示传给validator的参数本身有问题
+		//  ValidationErrors - 字段验证失败的错误集合
+		_, ok := err.(validator.ValidationErrors)
 
-		if !ok {
-			// validator解析错误
+		if ok { //ok == true , 表示是 ValidatonErros错误
+			FailWithDefault(ctx, ErrValidation)
+		} else { //表示不合法的JSON格式
 			FailWithDefault(ctx, ErrInvalidJSON)
-			return
 		}
 
-		// validator 的验证错误， 比如某个参数为空了/ 或者两个参数不等
-		FailWithDefault(ctx, ErrValidation)
 		return
 	}
 
@@ -78,5 +81,14 @@ func Login(ctx *gin.Context) {
 	}
 
 	// 登录成功
-	Success(ctx, nil)
+	// 生成 Token
+	tokenstring, err := jwt.GenToken(param.UserID, param.Username)
+	if err != nil {
+		zap.L().Error("生成Token失败", zap.Error(err))
+		FailWithDefault(ctx, ErrInvalidToken)
+		return
+	}
+
+	//返回响应，携带tokenstring
+	Success(ctx, tokenstring)
 }

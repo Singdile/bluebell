@@ -3,7 +3,9 @@ package router
 import (
 	"bluebell/controllers"
 	"bluebell/logger"
+	"bluebell/middlewares"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,13 +18,20 @@ func SetupRouter() (r *gin.Engine) {
 		panic(fmt.Sprintf("init trans failed, err: %v \n", err))
 	}
 
+	//  CORS跨域配置
+
 	//使用zap接管gin的日志记录
 	r.Use(logger.ZapLogger(), logger.ZapRecovery(true))
 
 	//注册路由
 	//用户注册
 	r.POST("/register", controllers.SignUp)
+
 	r.POST("/login", controllers.Login)
+
+	r.POST("/ping", middlewares.JwtAuthMiddleware(), func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, "success auth")
+	})
 
 	return
 }
