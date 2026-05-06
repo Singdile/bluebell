@@ -1,5 +1,4 @@
 package settings
-
 import (
 	"fmt"
 
@@ -12,6 +11,7 @@ type Config struct {
 	Logconfig       Logconfig       `mapstructure:"log"`
 	Databaseconfig  Databaseconfig  `mapstructure:"mysql"`
 	Redisconfig     Redisconfig     `mapstructure:"redis"`
+	Crosconfig      Crosconfig      `mapstructure:"cros"`
 	Snowflakeconfig Snowflakeconfig `mapstructure:"snowflake"`
 }
 
@@ -44,9 +44,18 @@ type Redisconfig struct {
 	Db       int    `mapstructure:"db"`
 }
 
+// 雪花算法配置
 type Snowflakeconfig struct {
 	StartTime string `mapstructure:"start_time"`
 	MachineID int64  `mapstructure:"machine_id"`
+}
+
+// 跨域配置
+type Crosconfig struct {
+	Allow_origins []string `mapstructure:"allow_origins"`
+	Allow_methods []string `mapstructure:"allow_methods"`
+	Allow_headers []string `mapstructure:"allow_headers"`
+	Max_age       int      `mapstructure:"max_age"`
 }
 
 // 设置一个全局的配置变量

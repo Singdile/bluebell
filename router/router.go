@@ -4,9 +4,12 @@ import (
 	"bluebell/controllers"
 	"bluebell/logger"
 	"bluebell/middlewares"
+	"bluebell/settings"
 	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +22,14 @@ func SetupRouter() (r *gin.Engine) {
 	}
 
 	//  CORS跨域配置
-
+	corsconfig := settings.Conf.Crosconfig
+	
+	r.Use(cors.New(cors.Config {
+		AllowOrigins: corsconfig.Allow_origins,
+			AllowMethods: corsconfig.Allow_methods,
+			AllowHeaders: corsconfig.Allow_headers,
+			MaxAge: time.Duration(corsconfig.Max_age) * time.Second,
+	}))
 	//使用zap接管gin的日志记录
 	r.Use(logger.ZapLogger(), logger.ZapRecovery(true))
 

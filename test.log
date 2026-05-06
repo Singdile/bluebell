@@ -195,3 +195,20 @@
 {"level":"info","ts":"2026-05-05T01:19:39.164+0800","caller":"logger/logger.go:91","msg":"/ping","status":401,"method":"POST","query":"","ip":"::1","user-agent":"curl/8.20.0","cost":0.000086403}
 {"level":"info","ts":"2026-05-05T01:21:34.617+0800","caller":"logger/logger.go:91","msg":"/register","status":404,"method":"OPTIONS","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000555}
 {"level":"info","ts":"2026-05-05T01:21:53.200+0800","caller":"logger/logger.go:91","msg":"/register","status":404,"method":"OPTIONS","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000471}
+{"level":"info","ts":"2026-05-06T09:40:12.384+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-06T09:40:12.389+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-06T09:40:12.390+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-06T09:40:12.390+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-06T09:47:42.893+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-06T09:47:42.893+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-06T09:47:42.894+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-06T09:47:42.894+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-06T09:48:18.515+0800","caller":"logger/logger.go:91","msg":"/register","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.059512513}
+{"level":"info","ts":"2026-05-06T09:48:34.716+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.052199704}
+{"level":"info","ts":"2026-05-06T09:53:07.151+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.053160552}
+{"level":"info","ts":"2026-05-06T09:56:44.019+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-06T09:56:44.020+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-06T09:56:44.021+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-06T09:56:44.021+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-06T09:56:52.437+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.051395582}
+{"level":"info","ts":"2026-05-06T09:58:36.543+0800","caller":"logger/logger.go:91","msg":"/ping","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000042525}
