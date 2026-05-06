@@ -212,3 +212,23 @@
 {"level":"info","ts":"2026-05-06T09:56:44.021+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
 {"level":"info","ts":"2026-05-06T09:56:52.437+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.051395582}
 {"level":"info","ts":"2026-05-06T09:58:36.543+0800","caller":"logger/logger.go:91","msg":"/ping","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000042525}
+{"level":"info","ts":"2026-05-06T15:44:40.634+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-06T15:44:40.634+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-06T15:44:40.635+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-06T15:44:40.635+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-06T15:45:41.388+0800","caller":"logger/logger.go:91","msg":"/community","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000394902}
+{"level":"info","ts":"2026-05-06T17:28:01.424+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-06T17:28:01.425+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-06T17:28:01.425+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-06T17:28:01.425+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-06T17:28:30.463+0800","caller":"logger/logger.go:91","msg":"/community","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000545379}
+{"level":"info","ts":"2026-05-06T17:28:30.505+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000646}
+{"level":"info","ts":"2026-05-06T17:28:37.887+0800","caller":"logger/logger.go:91","msg":"/community/1","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000352815}
+{"level":"info","ts":"2026-05-06T17:28:37.915+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.00000054}
+{"level":"info","ts":"2026-05-06T17:28:50.113+0800","caller":"logger/logger.go:91","msg":"/community/2","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.00051788}
+{"level":"info","ts":"2026-05-06T17:28:50.131+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000454}
+{"level":"info","ts":"2026-05-06T17:28:53.725+0800","caller":"logger/logger.go:91","msg":"/community/3","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000444712}
+{"level":"info","ts":"2026-05-06T17:28:53.748+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000528}
+{"level":"warn","ts":"2026-05-06T17:28:57.263+0800","caller":"mysql/community.go:35","msg":"communit not found","communit_id":4}
+{"level":"info","ts":"2026-05-06T17:28:57.263+0800","caller":"logger/logger.go:91","msg":"/community/4","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000519056}
+{"level":"info","ts":"2026-05-06T17:28:57.284+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000427}

@@ -1,6 +1,6 @@
 # 1. 变量定义 (放在最顶层，方便以后修改)
 APP_NAME    := bluebell
-DB_DSN      := "mysql://root:123456@tcp(127.0.0.1:3306)/bluebell"
+DB_DSN      := mysql://root:123456@tcp(127.0.0.1:3306)/bluebell
 MIGRATE_DIR := ./migrations
 
 # 2. 【核心】默认目标 (必须放在第一个目标位置)

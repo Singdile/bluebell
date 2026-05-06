@@ -33,6 +33,7 @@ const (
 	ErrNotFound     = "not_found"      // 资源不存在
 	ErrUserNotExist = "user_not_exist" // 用户不存在
 	ErrPostNotExist = "post_not_exist" // 帖子不存在
+	ErrIdNotExist   = "id_not_exist"   //id 不存在
 
 	// ==================== 冲突错误 ====================
 	// HTTP 409 Conflict
@@ -73,7 +74,7 @@ func getHTTPStatus(errorType string) int {
 		return http.StatusForbidden
 
 	// 资源不存在 -> 404
-	case ErrNotFound, ErrUserNotExist, ErrPostNotExist:
+	case ErrNotFound, ErrUserNotExist, ErrPostNotExist, ErrIdNotExist:
 		return http.StatusNotFound
 
 	// 资源冲突 -> 409
@@ -110,6 +111,7 @@ var errorMsgMap = map[string]string{
 	ErrNotFound:     "资源不存在",
 	ErrUserNotExist: "用户不存在",
 	ErrPostNotExist: "帖子不存在",
+	ErrIdNotExist:   "id不存在",
 	ErrConflict:     "请求冲突,请稍后重试",
 	ErrUserExists:   "用户名已存在",
 	ErrEmailExists:  "邮箱已注册",

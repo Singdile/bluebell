@@ -43,5 +43,8 @@ func SetupRouter() (r *gin.Engine) {
 		ctx.JSON(http.StatusOK, "success auth")
 	})
 
+	//获取社区列表 
+	r.GET("/community", controllers.CommunityHandler)
+	r.GET("/community/:id", controllers.CommunityByID)
 	return
 }
