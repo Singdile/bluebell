@@ -11,14 +11,13 @@ import (
 var db *sqlx.DB
 
 func Init() (err error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&loc=Local",
 		settings.Conf.Databaseconfig.User,
 		settings.Conf.Databaseconfig.Password,
 		settings.Conf.Databaseconfig.Host,
 		settings.Conf.Databaseconfig.Port,
 		settings.Conf.Databaseconfig.Dbname,
 	)
-
 	db, err = sqlx.Open("mysql", dsn)
 
 	if err != nil {

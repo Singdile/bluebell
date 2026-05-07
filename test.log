@@ -232,3 +232,59 @@
 {"level":"warn","ts":"2026-05-06T17:28:57.263+0800","caller":"mysql/community.go:35","msg":"communit not found","communit_id":4}
 {"level":"info","ts":"2026-05-06T17:28:57.263+0800","caller":"logger/logger.go:91","msg":"/community/4","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000519056}
 {"level":"info","ts":"2026-05-06T17:28:57.284+0800","caller":"logger/logger.go:91","msg":"/favicon.ico","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0","cost":0.000000427}
+{"level":"info","ts":"2026-05-07T00:16:23.966+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T00:16:23.971+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"error","ts":"2026-05-07T00:16:26.048+0800","caller":"bluebell/main.go:40","msg":"failed to init redis","error":"dial tcp 127.0.0.1:6379: connect: connection refused"}
+{"level":"info","ts":"2026-05-07T00:17:51.973+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T00:17:51.973+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T00:17:51.974+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T00:17:51.974+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-07T00:20:46.218+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053641681}
+{"level":"info","ts":"2026-05-07T00:28:04.704+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T00:28:04.705+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T00:28:04.706+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T00:28:04.706+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-07T00:28:24.197+0800","caller":"logger/logger.go:91","msg":"/post","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.002296051}
+{"level":"error","ts":"2026-05-07T00:31:21.233+0800","caller":"controllers/post.go:17","msg":"获取请求参数失败","error":"Key: 'Post.community_id' Error:Field validation for 'community_id' failed on the 'required' tag"}
+{"level":"info","ts":"2026-05-07T00:31:21.233+0800","caller":"logger/logger.go:91","msg":"/post","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000182311}
+{"level":"info","ts":"2026-05-07T01:16:06.782+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T01:16:06.783+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T01:16:06.783+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T01:16:06.783+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"error","ts":"2026-05-07T01:17:23.608+0800","caller":"controllers/post.go:70","msg":"post_id 路径参数错误","error":"strconv.ParseInt: parsing \"\": invalid syntax"}
+{"level":"info","ts":"2026-05-07T01:17:23.609+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":400,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000132889}
+{"level":"error","ts":"2026-05-07T01:19:01.174+0800","caller":"controllers/post.go:70","msg":"post_id 路径参数错误","error":"strconv.ParseInt: parsing \"\": invalid syntax"}
+{"level":"info","ts":"2026-05-07T01:19:01.174+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":400,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000080827}
+{"level":"info","ts":"2026-05-07T01:21:42.071+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T01:21:42.071+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T01:21:42.072+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T01:21:42.072+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"error","ts":"2026-05-07T01:21:47.375+0800","caller":"mysql/post.go:27","msg":"query post failed","error":"nil pointer passed to StructScan destination"}
+{"level":"error","ts":"2026-05-07T01:21:47.375+0800","caller":"controllers/post.go:80","msg":"获取数据库中的post 失败","error":"nil pointer passed to StructScan destination","post_id":3147842747109376}
+{"level":"info","ts":"2026-05-07T01:21:47.376+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":500,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000591007}
+{"level":"info","ts":"2026-05-07T01:39:35.988+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T01:39:35.988+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T01:39:35.988+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T01:39:35.989+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"error","ts":"2026-05-07T01:39:41.612+0800","caller":"mysql/post.go:28","msg":"query post failed","error":"sql: Scan error on column index 6, name \"create_time\": unsupported Scan, storing driver.Value type []uint8 into type *time.Time"}
+{"level":"error","ts":"2026-05-07T01:39:41.612+0800","caller":"controllers/post.go:80","msg":"获取数据库中的post 失败","error":"sql: Scan error on column index 6, name \"create_time\": unsupported Scan, storing driver.Value type []uint8 into type *time.Time","post_id":3147842747109376}
+{"level":"info","ts":"2026-05-07T01:39:41.612+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":500,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00080632}
+{"level":"error","ts":"2026-05-07T01:39:47.508+0800","caller":"mysql/post.go:28","msg":"query post failed","error":"sql: Scan error on column index 6, name \"create_time\": unsupported Scan, storing driver.Value type []uint8 into type *time.Time"}
+{"level":"error","ts":"2026-05-07T01:39:47.508+0800","caller":"controllers/post.go:80","msg":"获取数据库中的post 失败","error":"sql: Scan error on column index 6, name \"create_time\": unsupported Scan, storing driver.Value type []uint8 into type *time.Time","post_id":3147842747109376}
+{"level":"info","ts":"2026-05-07T01:39:47.508+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":500,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000661821}
+{"level":"info","ts":"2026-05-07T11:24:31.956+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T11:24:31.956+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T11:24:31.957+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T11:24:31.957+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-07T11:25:20.145+0800","caller":"logger/logger.go:91","msg":"/regi","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000000353}
+{"level":"info","ts":"2026-05-07T11:26:39.536+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.050731547}
+{"level":"error","ts":"2026-05-07T11:28:11.423+0800","caller":"mysql/post.go:28","msg":"query post failed","error":"sql: no rows in result set"}
+{"level":"error","ts":"2026-05-07T11:28:11.423+0800","caller":"controllers/post.go:80","msg":"获取数据库中的post 失败","error":"sql: no rows in result set","post_id":1}
+{"level":"info","ts":"2026-05-07T11:28:11.423+0800","caller":"logger/logger.go:91","msg":"/post/1","status":500,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000502927}
+{"level":"info","ts":"2026-05-07T11:29:04.874+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000430181}
+{"level":"info","ts":"2026-05-07T14:10:00.209+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T14:10:00.210+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T14:10:00.210+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T14:10:00.210+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-07T14:11:06.400+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053253647}
+{"level":"info","ts":"2026-05-07T14:12:29.778+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000603214}

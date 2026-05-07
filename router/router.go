@@ -23,12 +23,12 @@ func SetupRouter() (r *gin.Engine) {
 
 	//  CORS跨域配置
 	corsconfig := settings.Conf.Crosconfig
-	
-	r.Use(cors.New(cors.Config {
+
+	r.Use(cors.New(cors.Config{
 		AllowOrigins: corsconfig.Allow_origins,
-			AllowMethods: corsconfig.Allow_methods,
-			AllowHeaders: corsconfig.Allow_headers,
-			MaxAge: time.Duration(corsconfig.Max_age) * time.Second,
+		AllowMethods: corsconfig.Allow_methods,
+		AllowHeaders: corsconfig.Allow_headers,
+		MaxAge:       time.Duration(corsconfig.Max_age) * time.Second,
 	}))
 	//使用zap接管gin的日志记录
 	r.Use(logger.ZapLogger(), logger.ZapRecovery(true))
@@ -43,8 +43,11 @@ func SetupRouter() (r *gin.Engine) {
 		ctx.JSON(http.StatusOK, "success auth")
 	})
 
-	//获取社区列表 
+	//获取社区列表
 	r.GET("/community", controllers.CommunityHandler)
 	r.GET("/community/:id", controllers.CommunityByID)
+
+	r.POST("/post", middlewares.JwtAuthMiddleware(), controllers.PostHandler)
+	r.GET("/post/:id", middlewares.JwtAuthMiddleware(), controllers.GetPostDetailByID)
 	return
 }
