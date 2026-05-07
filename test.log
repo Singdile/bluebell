@@ -288,3 +288,21 @@
 {"level":"info","ts":"2026-05-07T14:10:00.210+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
 {"level":"info","ts":"2026-05-07T14:11:06.400+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053253647}
 {"level":"info","ts":"2026-05-07T14:12:29.778+0800","caller":"logger/logger.go:91","msg":"/post/3147842747109376","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000603214}
+{"level":"info","ts":"2026-05-07T18:33:58.768+0800","caller":"bluebell/main.go:28","msg":"logger init success"}
+{"level":"info","ts":"2026-05-07T18:33:58.769+0800","caller":"bluebell/main.go:36","msg":"init mysql success"}
+{"level":"info","ts":"2026-05-07T18:33:58.769+0800","caller":"bluebell/main.go:44","msg":"init redis success"}
+{"level":"info","ts":"2026-05-07T18:33:58.770+0800","caller":"bluebell/main.go:52","msg":"init snowflake node success"}
+{"level":"info","ts":"2026-05-07T18:35:12.531+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.053524801}
+{"level":"info","ts":"2026-05-07T18:39:57.388+0800","caller":"logger/logger.go:91","msg":"/posts","status":401,"method":"GET","query":"page=1","ip":"::1","user-agent":"curl/8.20.0","cost":0.000046988}
+{"level":"info","ts":"2026-05-07T18:40:17.304+0800","caller":"logger/logger.go:91","msg":"/login","status":200,"method":"POST","query":"","ip":"::1","user-agent":"curl/8.20.0","cost":0.051243671}
+{"level":"info","ts":"2026-05-07T18:40:30.801+0800","caller":"logger/logger.go:91","msg":"/posts","status":401,"method":"GET","query":"page=1","ip":"::1","user-agent":"curl/8.20.0","cost":0.000019019}
+{"level":"info","ts":"2026-05-07T18:40:43.523+0800","caller":"logger/logger.go:91","msg":"/posts","status":401,"method":"GET","query":"page=1&page_size=10","ip":"::1","user-agent":"curl/8.20.0","cost":0.000019819}
+{"level":"info","ts":"2026-05-07T18:40:52.027+0800","caller":"logger/logger.go:91","msg":"/posts","status":200,"method":"GET","query":"page=1&page_size=10","ip":"::1","user-agent":"curl/8.20.0","cost":0.001189173}
+{"level":"info","ts":"2026-05-07T18:41:25.598+0800","caller":"logger/logger.go:91","msg":"/post/1030","status":200,"method":"GET","query":"","ip":"::1","user-agent":"curl/8.20.0","cost":0.000547443}
+{"level":"info","ts":"2026-05-07T18:41:25.598+0800","caller":"logger/logger.go:91","msg":"/posts","status":200,"method":"GET","query":"page=2&page_size=20","ip":"::1","user-agent":"curl/8.20.0","cost":0.000984085}
+{"level":"info","ts":"2026-05-07T18:45:08.003+0800","caller":"logger/logger.go:91","msg":"/posts","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000868664}
+{"level":"info","ts":"2026-05-07T18:51:31.255+0800","caller":"logger/logger.go:91","msg":"/post","status":200,"method":"POST","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.002481709}
+{"level":"info","ts":"2026-05-07T18:52:02.470+0800","caller":"logger/logger.go:91","msg":"/posts","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000826953}
+{"level":"info","ts":"2026-05-07T18:52:27.926+0800","caller":"logger/logger.go:91","msg":"/posts/3425451385032704","status":404,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00000036}
+{"level":"info","ts":"2026-05-07T18:52:33.176+0800","caller":"logger/logger.go:91","msg":"/post/3425451385032704","status":200,"method":"GET","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.00052309}
+{"level":"info","ts":"2026-05-07T18:53:27.462+0800","caller":"logger/logger.go:91","msg":"/posts","status":200,"method":"GET","query":"page=1&pagesize=2","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.53.0","cost":0.000569126}
