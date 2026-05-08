@@ -10,7 +10,7 @@ type ParamSignUp struct {
 
 // 定义登录时的请求参数结构体
 type ParamLogin struct {
-	UserID   int64  `json:"user_id"`
+	UserID   int64  `json:"user_id,string"`
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
