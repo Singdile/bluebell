@@ -2,3 +2,4 @@
 /test_router.go.bak
 bluebell
 *.log
+test.log

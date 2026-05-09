@@ -2,20 +2,38 @@ package logic
 
 import (
 	"bluebell/dao/mysql"
+	"bluebell/dao/redis"
 	"bluebell/models"
 	"bluebell/pkg/snowflake"
+	"fmt"
+	"time"
 
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
-func CreatePost(post *models.Post) (err error) {
+// CreatePost 创建post
+func CreatePost(ctx *gin.Context,post *models.Post) (err error) {
 	// 创建post_id
 	post_id := snowflake.GenID()
 	post.ID = post_id
-	//保存到数据库
 
+	// 初始化CreateTime
+	post.CreateTime = time.Now()
+
+	//保存到数据库
+	err = mysql.InsertPost(post)
+	if err != nil {
+		return err
+	}
+	//保存到reids
+	err = redis.CreatePost(ctx, post)
+	if err != nil {
+		return err
+	}
 	//返回
-	return mysql.InsertPost(post)
+	return nil
+
 }
 
 // GetPostByID 根据ID查询post
@@ -58,4 +76,9 @@ func GetPostList(page, pagesize int64) (*models.PostListResponse, error) {
 		List:       list,
 	}
 	return responsedata, nil
+}
+
+// VotePost 用户为帖子投票
+func VotePost(ctx *gin.Context,user_id int64,vote * models.ParamVote) error{
+	return redis.VotePost(ctx,fmt.Sprintf("%v",user_id),fmt.Sprintf("%v",vote.PostID),float64(vote.Direction))
 }

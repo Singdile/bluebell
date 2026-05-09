@@ -6,7 +6,7 @@ import (
 	"bluebell/middlewares"
 	"bluebell/settings"
 	"fmt"
-	"math"
+
 	"net/http"
 	"time"
 
@@ -54,10 +54,8 @@ func SetupRouter() (r *gin.Engine) {
 	// 帖子列表接口(分页)
 	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
 	//r.GET("/community/:id/posts", controllers.GetPostListByCommunity)
-	r.GET("/test", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"data": fmt.Sprintf("%d", math.MaxInt64), // 转为字符串避免前端精度丢失
-		})
-	})
+
+
+	r.POST("/vote",middlewares.JwtAuthMiddleware() ,controllers.PostVote)
 	return
 }

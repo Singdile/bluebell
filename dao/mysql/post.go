@@ -36,8 +36,9 @@ type postDeteailDB struct {
 	CreateTime    time.Time `db:"create_time"`
 }
 
+// InsertPost 插入Post到数据库
 func InsertPost(post *models.Post) error {
-	sqlstr := "INSERT INTO post (post_id,title,content,author_id,community_id,status) VALUES (:post_id,:title,:content,:author_id,:community_id,:status)"
+	sqlstr := "INSERT INTO post (post_id,title,content,author_id,community_id,status,create_time) VALUES (:post_id,:title,:content,:author_id,:community_id,:status,:create_time)"
 
 	// 使用NamedExec, sqlx根据结构体的db tag来匹配
 	_, err := db.NamedExec(sqlstr, post)

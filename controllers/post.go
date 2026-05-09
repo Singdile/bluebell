@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
+	"fmt"
 )
 
 // PostHandler 创建一个新的post
@@ -49,11 +50,12 @@ func PostHandler(ctx *gin.Context) {
 
 	//业务处理
 	//创建帖子 Post
-	if err := logic.CreatePost(post); err != nil {
+	if err := logic.CreatePost(ctx,post); err != nil {
 		zap.L().Error("logic.CreatePost() failed", zap.Error(err))
 		FailWithDefault(ctx, ErrInternal)
 		return
 	}
+
 
 	//返回响应
 	Success(ctx, nil)
@@ -116,4 +118,39 @@ func GetPostList(ctx *gin.Context) {
 	// 返回响应
 	Success(ctx, responsedata)
 
+}
+
+// 投票
+func PostVote(ctx *gin.Context) {
+	//参数校验
+	//用户id,帖子id,投票类型
+	p := new(models.ParamVote)
+	if err := ctx.ShouldBindJSON(p); err != nil{
+		zap.L().Error("参数绑定错误",zap.Error(err))
+		// ValidationErrors 表示参数验证错误，比如投票参数非1,-1,0
+		errs,ok := err.(validator.ValidationErrors) //接口类型断言
+		if !ok {
+			Fail(ctx,ErrValidation,fmt.Sprintf("%v",errs.Translate(trans)))
+			return
+		}
+
+		//josn格式有问题 无法绑定
+		return
+
+	}
+
+	user_id,err := getCurrentUser(ctx)
+	if err != nil {
+		Fail(ctx, ErrLoginFailed,"用户id查询失败,需要登录")
+		return
+	}
+
+	//业务处理，用户投票
+	if err := logic.VotePost(ctx,user_id,p); err != nil {
+		zap.L().Error("logic.VotePost() failed",zap.Error(err))
+		FailWithDefault(ctx,ErrInternal) //500,服务器内部错误
+	}
+
+	// 成功，返回响应
+	Success(ctx,nil)
 }

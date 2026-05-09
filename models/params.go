@@ -14,3 +14,11 @@ type ParamLogin struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+
+// 获取投票数据的映射结构体
+type ParamVote struct {
+	// UserID 从当前登录的用户获取
+	PostID    int64 `json:"post_id,string" binding:"required"`
+	// 赞成(1) 反对(-1) 弃票(0)
+	Direction int   `json:"direction,string" binding:"oneof=1 0 -1"`
+}
