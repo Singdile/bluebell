@@ -11,8 +11,20 @@ import (
 	"go.uber.org/zap"
 )
 
-// GetPostIDsInOrder
-func GetPostIDsInOrder(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error) {
+
+
+// GetPostIDs 获取指定范围，排序后的帖子 post_id 列表
+func GetPostIDs(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error){
+	if postquery.CommunityID == 0 {
+		return getPostIDsInOrder(ctx, postquery)
+	} else {
+		return getPostIDsInOrderByCom(ctx,postquery)
+	}
+}
+
+
+// getPostIDsInOrder 获取全局指定范围内的帖子
+func getPostIDsInOrder(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error) {
 	//判断order
 	key := getOrderKey(postquery.Order)
 	//查询redis  时间/分数 降序查询
@@ -20,8 +32,8 @@ func GetPostIDsInOrder(ctx *gin.Context, postquery *models.ParamPostQuery) ([]st
 
 }
 
-// GetPostIDsInOrderByCom 取出community下对应order的post_id 列表
-func GetPostIDsInOrderByCom(ctx *gin.Context, query *models.ParamPostQueryCommunity) ([]string, error) {
+// getPostIDsInOrderByCom 取出community下对应order的post_id 列表
+func getPostIDsInOrderByCom(ctx *gin.Context, query *models.ParamPostQuery) ([]string, error) {
 	//判断排序order,选取对应的key
 	orderkey := getOrderKey(query.Order)
 

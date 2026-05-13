@@ -1,0 +1,505 @@
+basePath: /
+definitions:
+  dto.CommunityDetailResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.CommunityDetail'
+      message:
+        type: string
+    type: object
+  dto.CommunityListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.CommunityDetail'
+        type: array
+      message:
+        type: string
+    type: object
+  dto.CreatePostRequest:
+    properties:
+      community_id:
+        example: 1
+        type: integer
+      content:
+        example: 帖子内容
+        type: string
+      title:
+        example: 帖子标题
+        type: string
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  dto.ErrorResponse:
+    properties:
+      error:
+        type: string
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      password:
+        example: password123
+        type: string
+      username:
+        example: admin
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.PostDetailResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.PostDetail'
+      message:
+        type: string
+    type: object
+  dto.PostListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.PostListItem'
+        type: array
+      message:
+        type: string
+    type: object
+  dto.SignUpRequest:
+    properties:
+      password:
+        example: password123
+        type: string
+      re_password:
+        example: password123
+        type: string
+      username:
+        example: admin
+        type: string
+    required:
+    - password
+    - re_password
+    - username
+    type: object
+  dto.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  dto.TokenResponse:
+    properties:
+      data:
+        description: JWT Token
+        type: string
+      message:
+        type: string
+    type: object
+  dto.VoteRequest:
+    properties:
+      action:
+        enum:
+        - up
+        - down
+        - cancel
+        example: up
+        type: string
+      post_id:
+        example: 1
+        type: integer
+    required:
+    - action
+    - post_id
+    type: object
+  models.CommunityDetail:
+    properties:
+      id:
+        example: "0"
+        type: string
+      introduction:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Post:
+    properties:
+      author_id:
+        example: "0"
+        type: string
+      community_id:
+        example: "0"
+        type: string
+      content:
+        type: string
+      create_time:
+        type: string
+      id:
+        example: "0"
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  models.PostDetail:
+    properties:
+      authorName:
+        type: string
+      community:
+        $ref: '#/definitions/models.CommunityDetail'
+      post:
+        $ref: '#/definitions/models.Post'
+    type: object
+  models.PostListItem:
+    properties:
+      author_id:
+        example: "0"
+        type: string
+      author_name:
+        type: string
+      community_id:
+        example: "0"
+        type: string
+      community_name:
+        type: string
+      content_preview:
+        description: 内容摘要
+        type: string
+      create_time:
+        type: string
+      post_id:
+        example: "0"
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: singdile0709@gmail.com
+    name: singdile
+    url: https://github.com/singdile
+  description: bluebell社区论坛后端API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: BlueBell 社区论坛 API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口，返回 JWT Token
+      parameters:
+      - description: 登录参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/dto.TokenResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: 用户登录
+      tags:
+      - 认证
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: 创建新用户账号
+      parameters:
+      - description: 注册参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/dto.TokenResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: 用户注册
+      tags:
+      - 认证
+  /v1/community:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有社区的列表信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/dto.CommunityListResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取社区列表
+      tags:
+      - 社区
+  /v1/community/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根据社区ID获取详细信息
+      parameters:
+      - description: 社区ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/dto.CommunityDetailResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取社区详情
+      tags:
+      - 社区
+  /v1/post:
+    post:
+      consumes:
+      - application/json
+      description: 创建新的帖子
+      parameters:
+      - description: 帖子参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建帖子
+      tags:
+      - 帖子
+  /v1/post/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根据帖子ID获取详细信息
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/dto.PostDetailResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取帖子详情
+      tags:
+      - 帖子
+  /v1/post2community:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取指定社区的帖子列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: pagesize
+        type: integer
+      - description: 社区ID
+        in: query
+        name: community_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/dto.PostListResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取社区帖子列表
+      tags:
+      - 帖子
+  /v1/posts:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取帖子列表，可按时间或分数排序
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: pagesize
+        type: integer
+      - default: time
+        description: 排序方式
+        enum:
+        - time
+        - score
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/dto.PostListResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取帖子列表
+      tags:
+      - 帖子
+  /v1/vote:
+    post:
+      consumes:
+      - application/json
+      description: 对帖子进行赞成、反对或弃票操作
+      parameters:
+      - description: 投票参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.VoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 投票成功
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 帖子投票
+      tags:
+      - 投票
+securityDefinitions:
+  ApiKeyAuth:
+    description: Type "Bearer" followed by a space and the JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

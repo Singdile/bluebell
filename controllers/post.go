@@ -3,20 +3,35 @@ package controllers
 import (
 	"bluebell/logic"
 	"bluebell/models"
+	"bluebell/models/dto"
 	"net/http"
 	"strconv"
 
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
-// PostHandler 创建一个新的post
+// PostHandler 创建帖子
+// @Summary 创建帖子
+// @Description 创建新的帖子
+// @Tags 帖子
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body dto.CreatePostRequest true "帖子参数"
+// @Success 200 {object} dto.SuccessResponse "创建成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 401 {object} dto.ErrorResponse "未授权"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /v1/post [post]
 func PostHandler(ctx *gin.Context) {
-	//获取参数
-	var post = new(models.Post)
-	if err := ctx.ShouldBind(post); err != nil { //gin框架绑定使用了validator库, 参数验证参考了定义结构体的binding tag
+	// 通过 DTO 接受请求
+	var req dto.CreatePostRequest
+
+	if err := ctx.ShouldBind(&req); err != nil { //gin框架绑定使用了validator库, 参数验证参考了定义结构体的binding tag
 		zap.L().Error("获取请求参数失败", zap.Error(err))
 		//转换为validator.ValidatorErrors类型的error 方便，转为为中文的错误表示
 		// ValidationErrors 表示验证错误，而非json格式错误
@@ -36,6 +51,13 @@ func PostHandler(ctx *gin.Context) {
 			return
 		}
 
+	}
+
+	// 转换为内部 model
+	post := &models.Post{
+		Content:     req.Content,
+		Title:       req.Title,
+		CommunityID: req.CommunityID,
 	}
 
 	// 通过jwt认证的用户，会在ctx中保存userid
@@ -60,7 +82,18 @@ func PostHandler(ctx *gin.Context) {
 	Success(ctx, nil)
 }
 
-// GetPostByID 根据id,查询对应的post
+// GetPostDetailByID 根据id,查询对应的post
+// @Summary 获取帖子详情
+// @Description 根据帖子ID获取详细信息
+// @Tags 帖子
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path int true "帖子ID"
+// @Success 200 {object} dto.PostDetailResponse "获取成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /v1/post/{id} [get]
 func GetPostDetailByID(ctx *gin.Context) {
 	//获取路径参数上的 post_id
 	pidstr := ctx.Param("id")
@@ -119,29 +152,51 @@ func GetPostDetailByID(ctx *gin.Context) {
 
 // }
 
-// GetPostListByOrder 获取postlist,根据指定的order= time/score.
+// GetPostListByOrder 获取帖子列表（按排序）
+// @Summary 获取帖子列表
+// @Description 分页获取帖子列表，可按时间或分数排序
+// @Tags 帖子
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param page query int false "页码" default(1)
+// @Param pagesize query int false "每页数量" default(10)
+// @Param order query string false "排序方式" Enums(time, score) default(time)
+// @Success 200 {object} dto.PostListResponse "获取成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /v1/posts [get]
 func GetPostListByOrder(ctx *gin.Context) {
-	//获取query参数 page pagesize order
-	postquery := &models.ParamPostQuery{ //初始化一个默认的参数
-		Page:     1,
-		Pagesize: 20,
-		Order:    "time",
+	// 使用 DTO 接收参数
+	var req = dto.PostListRequest{
+		Page:        1,
+		Pagesize:    20,
+		Order:       "time",
+		CommunityID: 0,
 	}
 
 	//绑定传递的参数,注意部分绑定成功的会改变数据的
-	err := ctx.ShouldBindQuery(postquery)
+	err := ctx.ShouldBindQuery(&req)
 	if err != nil {
 		zap.L().Error(
 			"post query 参数绑定失败",
 			zap.Error(err),
-			zap.Int64("page", postquery.Page),
-			zap.Int64("pagesize", postquery.Pagesize),
-			zap.String("order", postquery.Order),
+			zap.Int64("page", req.Page),
+			zap.Int64("pagesize", req.Pagesize),
+			zap.String("order", req.Order),
 		)
 	}
 
+	// 转换为内部 model
+	postquery := &models.ParamPostQuery{
+		Page:        req.Page,
+		Pagesize:    req.Pagesize,
+		Order:       req.Order,
+		CommunityID: req.CommunityID,
+	}
+
 	//查询帖子列表
-	responsedata, err := logic.GetPostListByOrder(ctx, postquery)
+	responsedata, err := logic.GetPostList(ctx, postquery)
 
 	if err != nil {
 		zap.L().Error("logic.GetPostListByOrder() fail", zap.Error(err))
@@ -154,32 +209,52 @@ func GetPostListByOrder(ctx *gin.Context) {
 
 }
 
-// GetPostListByCommunity 获取指定社区的帖子集合，可以指定按时间/热度顺序返回
+// GetPostListByCommunity 获取指定社区的帖子列表
+// @Summary 获取社区帖子列表
+// @Description 分页获取指定社区的帖子列表
+// @Tags 帖子
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param page query int false "页码" default(1)
+// @Param pagesize query int false "每页数量" default(10)
+// @Param community_id query int true "社区ID"
+// @Success 200 {object} dto.PostListResponse "获取成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /v1/post2community [get]
 func GetPostListByCommunity(ctx *gin.Context) {
-	// 初始化默认的  page pagesize order communityid
-	defaultquery := &models.ParamPostQueryCommunity{
-		ParamPostQuery: models.ParamPostQuery{
-			Page:     1,
-			Pagesize: 20,
-			Order:    "time",
-		},
-
-		CommunityID: 1,
+	// 使用 DTO 接收参数
+	var req = dto.PostListRequest{
+		Page:        1,
+		Pagesize:    20,
+		Order:       "time",
+		CommunityID: 0,
 	}
+
+
 	// 绑定更新传递的query参数，部分绑定成功的会改变数据
-	if err := ctx.ShouldBindQuery(defaultquery); err != nil {
+	if err := ctx.ShouldBindQuery(&req); err != nil {
 		zap.L().Error(
 			"post query 参数绑定失败",
 			zap.Error(err),
-			zap.Int64("page", defaultquery.Page),
-			zap.Int64("pagesize", defaultquery.Pagesize),
-			zap.String("order", defaultquery.Order),
-			zap.Int64("communityid", defaultquery.CommunityID),
+			zap.Int64("page", req.Page),
+			zap.Int64("pagesize", req.Pagesize),
+			zap.String("order", req.Order),
+			zap.Int64("communityid", req.CommunityID),
 		)
 	}
 
+	// 使用内部的model
+	defaultquery := &models.ParamPostQuery {
+		Page: req.Page,
+		Pagesize: req.Pagesize,
+		Order: req.Order,
+		CommunityID: req.CommunityID,
+	}
+
 	// 按照参数查询帖子列表
-	responsedata, err := logic.GetPostListByCommunity(ctx,defaultquery)
+	responsedata, err := logic.GetPostList(ctx, defaultquery)
 
 	if err != nil {
 		zap.L().Error("logic.GetPostListByCommunity() failed", zap.Error(err))
@@ -192,6 +267,18 @@ func GetPostListByCommunity(ctx *gin.Context) {
 }
 
 // 投票
+// @Summary 帖子投票
+// @Description 对帖子进行赞成、反对或弃票操作
+// @Tags 投票
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body dto.VoteRequest true "投票参数"
+// @Success 200 {object} dto.SuccessResponse "投票成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 401 {object} dto.ErrorResponse "未授权"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /v1/vote [post]
 func PostVote(ctx *gin.Context) {
 	//参数校验
 	//用户id,帖子id,投票类型

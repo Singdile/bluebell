@@ -3,3 +3,11 @@
 bluebell
 *.log
 test.log
+
+# Emacs
+.#*
+*~
+\#*\#
+.#*#
+test.lgo
+test.log

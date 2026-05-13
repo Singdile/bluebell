@@ -1,70 +1,58 @@
 package controllers
 
 import (
+	"bluebell/models/dto"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// 响应结构体
-type SuccessResponse struct {
-	Data    interface{} `json:"data"`    //业务数据
-	Message string      `json:"message"` //提示信息
-}
+// ========== 成功响应辅助函数 ==========
 
-// 单一错误响应结构
-type ErrorResponse struct {
-	Error   string `json:"error"`   //错误类型标识
-	Message string `json:"message"` //用户友好的错误信息
-	Field   string `json:"field"`   //错误字段
-}
-
-// Success 成功响应, 比如Get,Put等成功
+// Success 成功响应
 func Success(ctx *gin.Context, data any) {
-	ctx.JSON(http.StatusOK, SuccessResponse{
+	ctx.JSON(http.StatusOK, dto.SuccessResponse{
 		Data: data,
 	})
 }
 
-// Success 成功响应, 比如Get,Put等成功
+// SuccessWithMessage 成功响应（带消息）
 func SuccessWithMessage(ctx *gin.Context, message string, data any) {
-	ctx.JSON(http.StatusOK, SuccessResponse{
-		Data:    data,
-		Message: message,
+	ctx.JSON(http.StatusOK, dto.SuccessResponse{
+		BaseResponse: dto.BaseResponse{Message: message},
+		Data:         data,
 	})
 }
+
+// ========== 错误响应辅助函数 ==========
 
 // Fail 错误响应
 func Fail(ctx *gin.Context, errorType string, message string) {
-	//获取HTTP状态码
 	httpstatus := getHTTPStatus(errorType)
 
-	ctx.JSON(httpstatus, ErrorResponse{
-		Error:   errorType,
-		Message: message,
+	ctx.JSON(httpstatus, dto.ErrorResponse{
+		BaseResponse: dto.BaseResponse{Message: message},
+		Error:        errorType,
 	})
 }
 
-// Fail 错误响应，使用默认的响应信息
+// FailWithDefault 错误响应（使用默认消息）
 func FailWithDefault(ctx *gin.Context, errorType string) {
-	//获取HTTP状态码
 	httpstatus := getHTTPStatus(errorType)
 
-	//返回响应
-	ctx.JSON(httpstatus, ErrorResponse{
-		Error:   errorType,
-		Message: getErrorMsg(errorType),
+	ctx.JSON(httpstatus, dto.ErrorResponse{
+		BaseResponse: dto.BaseResponse{Message: getErrorMsg(errorType)},
+		Error:        errorType,
 	})
 }
 
-// FailWithField 错误响应(带错误字段信息)
+// FailWithField 错误响应（带字段信息）
 func FailWithField(ctx *gin.Context, errorType string, message string, field string) {
-	//获取HTTP状态码
 	httpstatus := getHTTPStatus(errorType)
 
-	ctx.JSON(httpstatus, ErrorResponse{
-		Error:   errorType,
-		Message: message,
-		Field:   field,
+	ctx.JSON(httpstatus, dto.ErrorResponse{
+		BaseResponse: dto.BaseResponse{Message: message},
+		Error:        errorType,
+		Field:        field,
 	})
 }

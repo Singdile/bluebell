@@ -25,13 +25,14 @@ type ParamVote struct {
 
 // 获取帖子列表的query参数结构体
 type ParamPostQuery struct {
-	Page     int64  `json:"page" form:"page"`
-	Pagesize int64  `json:"pagesize" form:"pagesize"`
-	Order    string `json:"order" form:"order"`
+	Page        int64  `json:"page" form:"page"`
+	Pagesize    int64  `json:"pagesize" form:"pagesize"`
+	Order       string `json:"order" form:"order"`
+	CommunityID int64  `json:"community_id" form:"community_id"`
 }
 
 // 获取帖子列表的query参数结构体
 type ParamPostQueryCommunity struct {
 	ParamPostQuery
-	CommunityID int64          `form:"community_id"`
+	CommunityID int64 `form:"community_id"`
 }

@@ -79,9 +79,9 @@ func GetPostDetailByID(post_id int64) (*models.PostDetail, error) {
 // }
 
 // GetPostListByOrder
-func GetPostListByOrder(ctx *gin.Context, postquery *models.ParamPostQuery) (*models.PostListResponse, error) {
+func getPostListByOrder(ctx *gin.Context, postquery *models.ParamPostQuery) (*models.PostListResponse, error) {
 	//1.从redis按照score/time 的降序取出 post_id
-	postids, err := redis.GetPostIDsInOrder(ctx, postquery)
+	postids, err := redis.GetPostIDs(ctx, postquery)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func GetPostListByOrder(ctx *gin.Context, postquery *models.ParamPostQuery) (*mo
 		return nil, nil
 	}
 	//2.按照post_id到mysql数据库中查询post, 返回的数据的顺序要是postids中的顺序
-	list, total, err := mysql.GetPostListByIDs(postids,0)
+	list, total, err := mysql.GetPostListByIDs(postids, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -121,27 +121,27 @@ func GetPostListByOrder(ctx *gin.Context, postquery *models.ParamPostQuery) (*mo
 	return responsedata, nil
 }
 
-func GetPostListByCommunity(ctx *gin.Context, query *models.ParamPostQueryCommunity) (*models.PostListResponse, error) {
+func getPostListByCommunity(ctx *gin.Context, query *models.ParamPostQuery) (*models.PostListResponse, error) {
 	// 查询社区按照对应的order的post_id 列表
-	postids, err := redis.GetPostIDsInOrderByCom(ctx, query)
+	postids, err := redis.GetPostIDs(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
 	if len(postids) == 0 {
 		//该社区没有帖子,返回空列表
-		return &models.PostListResponse {
-			Total: 0,
-			Page: query.Page,
-			PageSize: query.Pagesize,
+		return &models.PostListResponse{
+			Total:      0,
+			Page:       query.Page,
+			PageSize:   query.Pagesize,
 			TotalPages: 0,
-			List: []*models.PostListItem{},
-			VoteP: []string{},
-			VoteN: []string{},
+			List:       []*models.PostListItem{},
+			VoteP:      []string{},
+			VoteN:      []string{},
 		}, nil
 	}
 	// 按照post_id到mysql数据库中查询数据，返回的数据顺序是post_id 列表的顺序
-	list, total, err := mysql.GetPostListByIDs(postids,query.CommunityID)
+	list, total, err := mysql.GetPostListByIDs(postids, query.CommunityID)
 	if err != nil {
 		return nil, err
 	}
@@ -170,6 +170,15 @@ func GetPostListByCommunity(ctx *gin.Context, query *models.ParamPostQueryCommun
 		VoteN:      voteNList,
 	}
 	return responsedata, nil
+}
+
+// GetPostList 统一查询帖子列表的接口(全局，社区查询)
+func GetPostList(ctx *gin.Context, query *models.ParamPostQuery) (*models.PostListResponse, error) {
+	if query.CommunityID == 0 {
+		return getPostListByOrder(ctx, query)
+	} else {
+		return getPostListByCommunity(ctx, query)
+	}
 }
 
 // VotePost 用户为帖子投票

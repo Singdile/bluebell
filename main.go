@@ -11,6 +11,25 @@ import (
 	"go.uber.org/zap"
 )
 
+
+// @title BlueBell 社区论坛 API
+// @version 1.0
+// @description bluebell社区论坛后端API
+
+// @contact.name singdile
+// @contact.url https://github.com/singdile
+// @contact.email singdile0709@gmail.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and the JWT token.
+
 // go web 开发常用的脚手架模板
 func main() {
 	// 1.加载配置

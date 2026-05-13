@@ -6,16 +6,29 @@ import (
 	"bluebell/pkg/jwt"
 	"net/http"
 
+	"bluebell/models/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
-// 用户注册
+// SignUp 用户注册
+// @Summary 用户注册
+// @Description 创建新用户账号
+// @Tags 认证
+// @Accept json
+// @Produce json
+// @Param request body dto.SignUpRequest true "注册参数"
+// @Success 200 {object} dto.TokenResponse "注册成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /register [post]
 func SignUp(ctx *gin.Context) {
-	param := new(models.ParamSignUp)
+	// 使用 DTO 接受参数
+	var req dto.SignUpRequest
+
 	//获取参数验证和参数验证
-	if err := ctx.ShouldBind(param); err != nil {
+	if err := ctx.ShouldBind(&req); err != nil {
 		zap.L().Error("获取请求参数失败", zap.Error(err))
 
 		//转换为validator.ValidatorErrors类型的error 方便，转为为中文的错误表示
@@ -38,6 +51,13 @@ func SignUp(ctx *gin.Context) {
 
 	}
 
+	// 转换为内部的 model
+	param := &models.ParamSignUp {
+		Username: req.Username,
+		Password: req.Password,
+		Repassword: req.RePassword,
+	}
+
 	//业务处理, 用户注册
 	if err := logic.SignUp(param); err != nil {
 		zap.L().Error("插入用户数据失败", zap.Error(err))
@@ -50,12 +70,23 @@ func SignUp(ctx *gin.Context) {
 	Success(ctx, nil)
 }
 
-// Login 登陆
+// Login 用户登录
+// @Summary 用户登录
+// @Description 用户登录接口，返回 JWT Token
+// @Tags 认证
+// @Accept json
+// @Produce json
+// @Param request body dto.LoginRequest true "登录参数"
+// @Success 200 {object} dto.TokenResponse "登录成功"
+// @Failure 400 {object} dto.ErrorResponse "请求参数错误"
+// @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
+// @Router /login [post]
 func Login(ctx *gin.Context) {
-	//获取登录用户信息
-	param := new(models.ParamLogin)
+	// 使用DTO接收请求
+	var req dto.LoginRequest
 
-	if err := ctx.ShouldBind(param); err != nil {
+
+	if err := ctx.ShouldBind(&req); err != nil {
 		zap.L().Error("参数绑定失败", zap.Error(err))
 
 		// 断言是否是validator的验证错误
@@ -71,6 +102,13 @@ func Login(ctx *gin.Context) {
 
 		return
 	}
+
+	// 转换为内部的 ParamLogin Model
+	param := &models.ParamLogin {
+		Username: req.Username,
+		Password: req.Password,
+	}
+
 
 	// 业务逻辑处理
 	// 验证用户信息是否合法

@@ -1,0 +1,766 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "bluebell社区论坛后端API",
+        "title": "BlueBell 社区论坛 API",
+        "contact": {
+            "name": "singdile",
+            "url": "https://github.com/singdile",
+            "email": "singdile0709@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/login": {
+            "post": {
+                "description": "用户登录接口，返回 JWT Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "登录参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "创建新用户账号",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SignUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/community": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取所有社区的列表信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区"
+                ],
+                "summary": "获取社区列表",
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CommunityListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/community/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据社区ID获取详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区"
+                ],
+                "summary": "获取社区详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "社区ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CommunityDetailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建新的帖子",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "summary": "创建帖子",
+                "parameters": [
+                    {
+                        "description": "帖子参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "未授权",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据帖子ID获取详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "summary": "获取帖子详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "帖子ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostDetailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post2community": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "分页获取指定社区的帖子列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "summary": "获取社区帖子列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "pagesize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "社区ID",
+                        "name": "community_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "分页获取帖子列表，可按时间或分数排序",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "summary": "获取帖子列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "pagesize",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "time",
+                            "score"
+                        ],
+                        "type": "string",
+                        "default": "time",
+                        "description": "排序方式",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/vote": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "对帖子进行赞成、反对或弃票操作",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "投票"
+                ],
+                "summary": "帖子投票",
+                "parameters": [
+                    {
+                        "description": "投票参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.VoteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "投票成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "未授权",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CommunityDetailResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.CommunityDetail"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CommunityListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CommunityDetail"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreatePostRequest": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "community_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "content": {
+                    "type": "string",
+                    "example": "帖子内容"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "帖子标题"
+                }
+            }
+        },
+        "dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "dto.PostDetailResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.PostDetail"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PostListItem"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SignUpRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "re_password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                },
+                "re_password": {
+                    "type": "string",
+                    "example": "password123"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "dto.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "JWT Token",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.VoteRequest": {
+            "type": "object",
+            "required": [
+                "action",
+                "post_id"
+            ],
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "up",
+                        "down",
+                        "cancel"
+                    ],
+                    "example": "up"
+                },
+                "post_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "models.CommunityDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "introduction": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Post": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "author_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "community_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PostDetail": {
+            "type": "object",
+            "properties": {
+                "authorName": {
+                    "type": "string"
+                },
+                "community": {
+                    "$ref": "#/definitions/models.CommunityDetail"
+                },
+                "post": {
+                    "$ref": "#/definitions/models.Post"
+                }
+            }
+        },
+        "models.PostListItem": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "author_name": {
+                    "type": "string"
+                },
+                "community_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "community_name": {
+                    "type": "string"
+                },
+                "content_preview": {
+                    "description": "内容摘要",
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Type \"Bearer\" followed by a space and the JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

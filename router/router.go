@@ -7,11 +7,14 @@ import (
 	"bluebell/settings"
 	"fmt"
 
-	"net/http"
 	"time"
 
+	"github.com/swaggo/files"
+
+	_ "bluebell/docs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter() (r *gin.Engine) {
@@ -40,23 +43,26 @@ func SetupRouter() (r *gin.Engine) {
 
 	r.POST("/login", controllers.Login)
 
-	r.POST("/ping", middlewares.JwtAuthMiddleware(), func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "success auth")
-	})
+	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware())
 
-	//获取社区列表
-	r.GET("/community", controllers.CommunityHandler)
-	r.GET("/community/:id", controllers.CommunityByID)
+	{
+		//获取社区列表
+		v1.GET("/community", controllers.CommunityHandler)
+		v1.GET("/community/:id", controllers.CommunityByID)
 
-	r.POST("/post", middlewares.JwtAuthMiddleware(), controllers.PostHandler)
-	r.GET("/post/:id", middlewares.JwtAuthMiddleware(), controllers.GetPostDetailByID)
+		v1.POST("/post", controllers.PostHandler)
+		v1.GET("/post/:id", controllers.GetPostDetailByID)
 
-	// 帖子列表接口(分页)
-	//	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
-	r.GET("/posts2", middlewares.JwtAuthMiddleware(), controllers.GetPostListByOrder)
-	r.GET("/post2community", middlewares.JwtAuthMiddleware(),controllers.GetPostListByCommunity)
+		// 帖子列表接口(分页)
+		//	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
+		v1.GET("/posts2", controllers.GetPostListByOrder)
+		v1.GET("/post2community", controllers.GetPostListByCommunity)
 
-	r.POST("/vote", middlewares.JwtAuthMiddleware(), controllers.PostVote)
+		// 帖子投票
+		v1.POST("/vote", controllers.PostVote)
 
+	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return
 }
