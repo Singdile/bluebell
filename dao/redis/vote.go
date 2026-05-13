@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -93,19 +94,23 @@ func CreatePost(ctx *gin.Context, post *models.Post) error {
 	//记录创建的post_id, create_time
 	pipe.ZAdd(ctx, KeyPostTimeZset, redis.Z{
 		Score:  float64(post.CreateTime.Unix()),
-		Member: fmt.Sprintf("%v",post.ID),
+		Member: fmt.Sprintf("%v", post.ID),
 	})
 
 	//记录创建时的分数，默认为创建的时间
-	pipe.ZAdd(ctx,KeyPostScoreZset,redis.Z{
-		Score: float64(post.CreateTime.Unix()),
-		Member:fmt.Sprintf("%v",post.ID),
+	pipe.ZAdd(ctx, KeyPostScoreZset, redis.Z{
+		Score:  float64(post.CreateTime.Unix()),
+		Member: fmt.Sprintf("%v", post.ID),
 	})
 
-	_,err := pipe.Exec(ctx)
+	//记录在对应的community的set下面
+	key := KeyPostCommunitySetPrefix + strconv.FormatInt(post.CommunityID,10)
+	pipe.SAdd(ctx, key,fmt.Sprintf("%v",post.ID) )
+
+	_, err := pipe.Exec(ctx)
 
 	if err != nil {
-		zap.L().Error("redis add KeyPostTimeZset or KeyPostScoreZset failed", zap.Error(err),zap.Int64("post_id",post.ID))
+		zap.L().Error("redis add KeyPostTimeZset or KeyPostScoreZset failed", zap.Error(err), zap.Int64("post_id", post.ID))
 	}
 
 	return nil

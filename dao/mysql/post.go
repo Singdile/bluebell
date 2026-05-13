@@ -2,8 +2,10 @@ package mysql
 
 import (
 	"bluebell/models"
+	"strings"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -112,7 +114,7 @@ func GetPostDetailByID(post_id int64) (postdetail *models.PostDetail, err error)
 	}
 
 	//成功
-	return postdetail, nil
+	return postdetail, err
 
 }
 
@@ -173,4 +175,62 @@ LIMIT ? OFFSET ?
 	}
 
 	return list, total, nil
+}
+
+// 根据给定的post_id list 查询帖子数据
+func GetPostListByIDs(post_ids []string, community_id int64) ([]*models.PostListItem, int64, error) {
+	idsStr := strings.Join(post_ids, ",")
+
+	sqlstr := `
+    SELECT
+    p.post_id as post_id,
+    p.title as title,
+    SUBSTRING(p.content,1,200) AS content_preview,
+    p.author_id AS author_id,
+    u.username AS author_name,
+    p.community_id AS community_id,
+    c.community_name AS community_name,
+    p.status AS status,
+    p.create_time AS create_time
+    FROM post p
+    LEFT JOIN user u ON p.author_id = u.user_id
+    LEFT JOIN community c ON p.community_id = c.community_id
+    WHERE p.post_id IN (?)
+    ORDER BY FIND_IN_SET(p.post_id, ?)
+    `
+	postlistitem := make([]*models.PostListItem, 0, len(post_ids))
+	query, args, err := sqlx.In(sqlstr, post_ids, idsStr)
+	if err != nil {
+		zap.L().Error("sqlx.In() failed", zap.Error(err))
+		return nil, 0, err
+	}
+
+	query = db.Rebind(query)
+
+	err = db.Select(&postlistitem, query, args...)
+	if err != nil {
+		zap.L().Error("sqlx.Select() failed", zap.Error(err))
+		return nil, 0, err // ← 注意：这里必须返回 err，不能返回 nil
+	}
+
+	// 统计总数
+	// community_id = 0 统计全站
+	// community_id > 0 统计社区
+	var total int64
+	if community_id == 0 {
+		totalsql := "SELECT COUNT(*) FROM post"
+		if err := db.Get(&total, totalsql); err != nil {
+			zap.L().Error("query post total failed", zap.Error(err))
+			return nil, 0, err
+		}
+
+	} else if community_id > 0 {
+		totalsql := "SELECT COUNT(*) FROM post WHERE community_id = ?"
+		if err := db.Get(&total, totalsql,community_id); err != nil {
+			zap.L().Error("query community post number failed", zap.Error(err))
+			return nil, 0, err
+		}
+	}
+
+	return postlistitem, total, nil
 }

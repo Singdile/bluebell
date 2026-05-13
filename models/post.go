@@ -2,6 +2,11 @@ package models
 
 import "time"
 
+const (
+	Timeorder  = "time"
+	Scoreorder = "score"
+)
+
 // Post 表示帖子的结构体
 type Post struct {
 	Content     string    `json:"content" db:"content" binding:"required"`
@@ -41,4 +46,6 @@ type PostListResponse struct {
 	PageSize   int64           `json:"page_size,string"`   //每页数量
 	TotalPages int64           `json:"total_pages,string"` //总页数
 	List       []*PostListItem `json:"list"`               //帖子列表
+	VoteP      []string         `json:"vote_p"`
+	VoteN      []string        `json:"vote_n"`
 }

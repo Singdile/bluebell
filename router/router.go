@@ -52,10 +52,11 @@ func SetupRouter() (r *gin.Engine) {
 	r.GET("/post/:id", middlewares.JwtAuthMiddleware(), controllers.GetPostDetailByID)
 
 	// 帖子列表接口(分页)
-	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
-	//r.GET("/community/:id/posts", controllers.GetPostListByCommunity)
+	//	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
+	r.GET("/posts2", middlewares.JwtAuthMiddleware(), controllers.GetPostListByOrder)
+	r.GET("/post2community", middlewares.JwtAuthMiddleware(),controllers.GetPostListByCommunity)
 
+	r.POST("/vote", middlewares.JwtAuthMiddleware(), controllers.PostVote)
 
-	r.POST("/vote",middlewares.JwtAuthMiddleware() ,controllers.PostVote)
 	return
 }

@@ -18,7 +18,20 @@ type ParamLogin struct {
 // 获取投票数据的映射结构体
 type ParamVote struct {
 	// UserID 从当前登录的用户获取
-	PostID    int64 `json:"post_id,string" binding:"required"`
+	PostID int64 `json:"post_id,string" binding:"required"`
 	// 赞成(1) 反对(-1) 弃票(0)
-	Direction int   `json:"direction,string" binding:"oneof=1 0 -1"`
+	Direction int `json:"direction,string" binding:"oneof=1 0 -1"`
+}
+
+// 获取帖子列表的query参数结构体
+type ParamPostQuery struct {
+	Page     int64  `json:"page" form:"page"`
+	Pagesize int64  `json:"pagesize" form:"pagesize"`
+	Order    string `json:"order" form:"order"`
+}
+
+// 获取帖子列表的query参数结构体
+type ParamPostQueryCommunity struct {
+	ParamPostQuery
+	CommunityID int64          `form:"community_id"`
 }
