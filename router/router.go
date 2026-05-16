@@ -43,7 +43,7 @@ func SetupRouter() (r *gin.Engine) {
 
 	r.POST("/login", controllers.Login)
 
-	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware())
+	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware(),middlewares.RateLimitMiddleware(1,5))
 
 	{
 		//获取社区列表
