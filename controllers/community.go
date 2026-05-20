@@ -10,8 +10,6 @@ import (
 
 // -----所有和社区相关的-----
 
-
-
 // CommunityHandler 查询所有的社区，以(community_id, community_name)的形式返回
 // @Summary 获取社区列表
 // @Description 获取所有社区的列表信息
@@ -58,6 +56,7 @@ func CommunityByID(ctx *gin.Context) {
 		zap.L().Error("Invalid community_id parameter", zap.String("id", idstr),
 			zap.Error(err))
 		Fail(ctx, ErrValidation, "无效的社区ID")
+		return
 	}
 
 	//业务处理

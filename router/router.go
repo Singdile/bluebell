@@ -43,7 +43,7 @@ func SetupRouter() (r *gin.Engine) {
 
 	r.POST("/login", controllers.Login)
 
-	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware(),middlewares.RateLimitMiddleware(1,5))
+	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware(),  middlewares.RateLimitMiddleware(5, 10))
 
 	{
 		//获取社区列表
@@ -54,12 +54,14 @@ func SetupRouter() (r *gin.Engine) {
 		v1.GET("/post/:id", controllers.GetPostDetailByID)
 
 		// 帖子列表接口(分页)
-		//	r.GET("/posts", middlewares.JwtAuthMiddleware(), controllers.GetPostList)
 		v1.GET("/posts2", controllers.GetPostListByOrder)
 		v1.GET("/post2community", controllers.GetPostListByCommunity)
 
 		// 帖子投票
 		v1.POST("/vote", controllers.PostVote)
+
+
+
 
 	}
 

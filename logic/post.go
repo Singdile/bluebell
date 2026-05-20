@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // CreatePost 创建post
@@ -21,6 +20,9 @@ func CreatePost(ctx *gin.Context, post *models.Post) (err error) {
 
 	// 初始化CreateTime
 	post.CreateTime = time.Now()
+
+	// 初始化 Score（等于创建时间戳）
+	post.Score = post.CreateTime.Unix()
 
 	//保存到数据库
 	err = mysql.InsertPost(post)
@@ -43,131 +45,132 @@ func GetPostDetailByID(post_id int64) (*models.PostDetail, error) {
 	return mysql.GetPostDetailByID(post_id)
 }
 
-// GetPostList 获取用户指定的第几页的帖子数据
-// func GetPostList(page, pagesize int64) (*models.PostListResponse, error) {
-//	// 参数校验
-//	if page < 1 {
-//		page = 1
-//	}
-
-//	if pagesize < 1 || pagesize > 50 {
-//		pagesize = 20
-//	}
-//	// 调用dao层 查询帖子列表和总数
-//	list, total, err := mysql.GetPostList(page, pagesize)
-
-//	if err != nil {
-//		zap.L().Error("mysql.GetPostList failed", zap.Error(err))
-//		return nil, err
-//	}
-
-//	// 计算总页数
-//	totalpage := int64(total) / pagesize
-//	if total%pagesize != 0 {
-//		totalpage++
-//	}
-
-//	//组装响应结构体
-//	responsedata := &models.PostListResponse{
-//		Total:      total,
-//		Page:       page,
-//		PageSize:   pagesize,
-//		TotalPages: totalpage,
-//		List:       list,
-//	}
-//	return responsedata, nil
-// }
-
 // GetPostListByOrder
+// 先查reids
+// reids为空，则使用mysql
 func getPostListByOrder(ctx *gin.Context, postquery *models.ParamPostQuery) (*models.PostListResponse, error) {
-	//1.从redis按照score/time 的降序取出 post_id
-	postids, err := redis.GetPostIDs(ctx, postquery)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(postids) == 0 {
-		zap.L().Warn("redis.GetPostIDsInOrder() success,bu get 0 record")
-		return nil, nil
-	}
-	//2.按照post_id到mysql数据库中查询post, 返回的数据的顺序要是postids中的顺序
-	list, total, err := mysql.GetPostListByIDs(postids, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	//查询每篇帖子的投票数
-	votePList, voteNList, err := redis.GetPostVoteData(ctx, postids)
+	// 先获取帖子的总数
+	total, err := getTotalPostCount(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	// 计算总页数
-	totalpage := int64(total) / postquery.Pagesize
+	totalpage := total / postquery.Pagesize
 	if total%postquery.Pagesize != 0 {
 		totalpage++
 	}
 
-	//3.构造成响应结构体返回
-	responsedata := &models.PostListResponse{
-		Total:      total,
-		Page:       postquery.Page,
-		PageSize:   postquery.Pagesize,
-		TotalPages: totalpage,
-		List:       list,
-		VoteP:      votePList,
-		VoteN:      voteNList,
+	// 分页查询数据
+	//1.尝试从redis按照score/time 的降序取出 post_id
+	postids, err := redis.GetPostIDs(ctx, postquery)
+
+	// redis 正常有数据 ——> 返回redis结果
+	if err == nil && len(postids) > 0 {
+		responsedata, err := buildResponseFromRedis(ctx, postids, postquery)
+		if err != nil {
+			return nil, err
+		}
+		responsedata.Total = total
+		responsedata.TotalPages = totalpage
+		return responsedata, nil
 	}
-	return responsedata, nil
+
+	//2. redis 查询失败 ——> 查询mysql
+	responsedata, err := getPostListFromMySQL(ctx, postquery)
+	if err != nil {
+		return nil, err
+	} else {
+		responsedata.Total = total
+		responsedata.TotalPages = totalpage
+		return responsedata, nil
+	}
+
 }
 
+// buildResponseFromRedis redis查询到postids,再到mysql中查找对应的
+func buildResponseFromRedis(ctx *gin.Context, postids []string, postquery *models.ParamPostQuery) (*models.PostListResponse, error) {
+	//按照post_id到mysql数据库中查询post, 返回的数据的顺序要是postids中的顺序
+	list, err := mysql.GetPostListByIDs(postids, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	//构造成响应结构体返回
+	responsedata := &models.PostListResponse{
+		Page:     postquery.Page,
+		PageSize: postquery.Pagesize,
+		List:     list,
+	}
+
+	return responsedata, nil
+
+}
+
+// getPostListFromMySQL 从mysql中分页查询postlist
+func getPostListFromMySQL(ctx *gin.Context, postquery *models.ParamPostQuery) (*models.PostListResponse, error) {
+	// MySQL 按序分页查询获取数据
+	list, err := mysql.GetPostListByOrder(postquery.Page, postquery.Pagesize, postquery.Order)
+	if err != nil {
+		return nil, err
+	}
+
+	// 构造返回
+	responsedata := &models.PostListResponse{
+		Page:     postquery.Page,
+		PageSize: postquery.Pagesize,
+		List:     list,
+	}
+
+	return responsedata, nil
+
+}
+
+// getPostListByCommunity 获取社区帖子列表
 func getPostListByCommunity(ctx *gin.Context, query *models.ParamPostQuery) (*models.PostListResponse, error) {
+	// 获取社区帖子总数
+	total, err := getCommunityPostCount(ctx, query.CommunityID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 计算总的记录数total 和 总页数 totalpage
+	totalpage := total / query.Pagesize
+	if total%query.Pagesize != 0 {
+		totalpage++
+	}
+
+	// 查询redis
+	if total == 0 { // 该社区还没有帖子
+		return &models.PostListResponse{
+			Total: 0,
+			Page: query.Page,
+			PageSize: query.Pagesize,
+			TotalPages: 0,
+			List: []*models.PostListItem{},
+		},nil
+	}
+
+
 	// 查询社区按照对应的order的post_id 列表
 	postids, err := redis.GetPostIDs(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(postids) == 0 {
-		//该社区没有帖子,返回空列表
-		return &models.PostListResponse{
-			Total:      0,
-			Page:       query.Page,
-			PageSize:   query.Pagesize,
-			TotalPages: 0,
-			List:       []*models.PostListItem{},
-			VoteP:      []string{},
-			VoteN:      []string{},
-		}, nil
-	}
 	// 按照post_id到mysql数据库中查询数据，返回的数据顺序是post_id 列表的顺序
-	list, total, err := mysql.GetPostListByIDs(postids, query.CommunityID)
+	list, err := mysql.GetPostListByIDs(postids, query.CommunityID)
 	if err != nil {
 		return nil, err
-	}
-
-	// 根据post_id 列表 查询每篇帖子的投票数
-	votePList, voteNList, err := redis.GetPostVoteData(ctx, postids)
-	if err != nil {
-		return nil, err
-	}
-
-	// 计算总页数
-	totalpage := int64(len(postids)) / query.Pagesize
-	if total%query.Pagesize != 0 {
-		totalpage++
 	}
 
 	// 构造响应结构体返回
-	//3.构造成响应结构体返回
 	responsedata := &models.PostListResponse{
-		Total:      int64(len(postids)),
+		Total:      total,
 		Page:       query.Page,
 		PageSize:   query.Pagesize,
 		TotalPages: totalpage,
 		List:       list,
-		VoteP:      votePList,
-		VoteN:      voteNList,
 	}
 	return responsedata, nil
 }
@@ -184,4 +187,28 @@ func GetPostList(ctx *gin.Context, query *models.ParamPostQuery) (*models.PostLi
 // VotePost 用户为帖子投票
 func VotePost(ctx *gin.Context, user_id int64, vote *models.ParamVote) error {
 	return redis.VotePost(ctx, fmt.Sprintf("%v", user_id), fmt.Sprintf("%v", vote.PostID), float64(vote.Direction))
+}
+
+// getTotalPostCount 获取帖子总数(先redis， fallback mysql)
+func getTotalPostCount(ctx *gin.Context) (int64, error) {
+	//优先从redis中获取
+	count, err := redis.GetTotalPostCount(ctx)
+	if err == nil && count > 0 {
+		return count, nil
+	}
+
+	// reids 获取失败，fallback 到 mysql
+	return mysql.GetTotalPostCount()
+}
+
+// getCommunityPostCount 获取社区帖子总数 (先redis， fallback mysql)
+func getCommunityPostCount(ctx *gin.Context, communityid int64) (int64, error) {
+	// 优先从redis中获取
+	count, err := redis.GetCommunityPostCount(ctx, communityid)
+	if err == nil && count > 0 {
+		return count, nil
+	}
+
+	// redis 获取失败， fallbcak 到 mysql
+	return mysql.GetCommunityPostCount(communityid)
 }

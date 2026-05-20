@@ -38,7 +38,7 @@ migrate-down:
 
 # 5. 清理与帮助 (工具类)
 redis:
-	docker run -p 6379:6379 -d redis
+	docker run -d --name redis-blue -p 6379:6379 redis:latest
 
 
 clean:

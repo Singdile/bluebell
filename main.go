@@ -7,10 +7,11 @@ import (
 	"bluebell/pkg/snowflake"
 	"bluebell/router"
 	"bluebell/settings"
+	"context"
 	"fmt"
+
 	"go.uber.org/zap"
 )
-
 
 // @title BlueBell 社区论坛 API
 // @version 1.0
@@ -61,7 +62,26 @@ func main() {
 	defer redis.Close()
 	zap.L().Info("init redis success")
 
-	// 5.初始化雪花算法计算机节点
+	// 5.同步 Redis 索引（从 MySQL 全量同步）
+	ctx := context.Background()
+	if err := redis.SyncPostsFromMySQL(ctx); err != nil {
+		zap.L().Error("failed to sync redis index", zap.Error(err))
+		// 不阻止服务启动，只是记录错误
+	}
+	zap.L().Info("sync redis index success")
+
+	// 6.初始化 score 更新队列
+	mysql.InitScoreQueue()
+	defer mysql.StopScoreQueue()
+	zap.L().Info("init score queue success")
+
+	// 初始化 vote 更新队列
+	mysql.InitVoteUpdateQueue()
+	defer mysql.StopVoteUpdateQueue()
+	zap.L().Info("init vote queue success")
+
+
+	// 7.初始化雪花算法计算机节点
 	fmt.Printf("time: %v %v\n", settings.Conf.Snowflakeconfig.StartTime, settings.Conf.Snowflakeconfig.MachineID)
 	if err := snowflake.Init(settings.Conf.Snowflakeconfig.StartTime, settings.Conf.Snowflakeconfig.MachineID); err != nil {
 		zap.L().Error("failed to init snowflake node", zap.Error(err))
@@ -69,10 +89,10 @@ func main() {
 	}
 	zap.L().Info("init snowflake node success")
 
-	// 5.注册路由
+	// 8.注册路由
 	r := router.SetupRouter()
 
-	// 6.启动服务
+	// 9.启动服务
 	r.Run()
 
 }

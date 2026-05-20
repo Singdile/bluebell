@@ -26,7 +26,7 @@ type CreatePostRequest struct {
 
 // VoteRequest 投票请求
 type VoteRequest struct {
-	PostID int64  `json:"post_id" binding:"required" example:"1"`
+	PostID int64  `json:"post_id,string" binding:"required" example:"1"`
 	Action string `json:"action" binding:"required,oneof=up down cancel" example:"up"`
 }
 

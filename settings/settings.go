@@ -2,6 +2,7 @@ package settings
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -64,8 +65,14 @@ var Conf *Config
 
 // 初始化配置文件
 func Init() (err error) {
+	// 从环境变量获取配置文件名，默认为"config"
+	configname := os.Getenv("CONFIG_NAME")
+	if configname == "" {
+		configname = "config"
+	}
+
 	// 配置查找
-	viper.SetConfigName("config")
+	viper.SetConfigName(configname)
 	viper.AddConfigPath(".") // 搜索当前路径
 	viper.AddConfigPath("./settings/")
 

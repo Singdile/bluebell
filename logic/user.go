@@ -7,6 +7,11 @@ import (
 	"errors"
 )
 
+// 定义业务错误
+var (
+	ErrUserExists = errors.New("用户已存在")
+)
+
 func SignUp(p *models.ParamSignUp) (err error) {
 	//查询用户是否已经存在
 	exist, err := mysql.CheckUserExist(p.Username)
@@ -17,7 +22,7 @@ func SignUp(p *models.ParamSignUp) (err error) {
 	}
 
 	if exist {
-		return errors.New("用户已经存在")
+		return ErrUserExists
 	}
 
 	//插入用户数据

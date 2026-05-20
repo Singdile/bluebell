@@ -5,7 +5,7 @@ app:
 
 log:
     filename: "./test.log"
-    level: "info"
+    level: "debug"
     mode: "dev" # dev(console+file), prod(only file)
 
 mysql:

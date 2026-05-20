@@ -1,0 +1,37 @@
+services:
+  backend:
+    build: . # 读取当前目录下的 Dockerfile 进行镜像构建
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_NAME=config.docker
+    depends_on:
+      - mysql # 依赖，确保mysql 容器启动之后，再启动backend
+      - redis
+    networks:
+      - bluebell-net # 加入自定义的网络，使得多个容器可以通过 "服务名" 当作域名来通信
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "13306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=bluebell321 # 设置root密码
+      - MYSQL_DATABASE=bluebell # 创建一个名为 bluebell 的数据库
+    volumes:
+      - mysql_data:/var/lib/mysql # 挂载卷：将mysql数据映射到主机，数据持久化保持
+    networks:
+      - bluebell-net
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bluebell-net
+volumes:
+  mysql_data:
+  redis_data:
+networks:
+  bluebell-net:
+    driver: bridge

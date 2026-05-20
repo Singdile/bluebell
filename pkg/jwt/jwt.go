@@ -10,7 +10,7 @@ import (
 // 过期时间
 const TokenExpireDuration = time.Hour * 2
 const (
-	errUserID = "userID must be positive"
+	errUserID   = "userID must be positive"
 	errUserName = "username cannot be empty"
 )
 
@@ -28,11 +28,11 @@ type MyClaims struct {
 func GenToken(userID int64, username string) (string, error) {
 	// 参数校验
 	if userID <= 0 {
-		return "",errors.New(errUserID)
+		return "", errors.New(errUserID)
 	}
 
-	if username == ""{
-		return "",errors.New(errUserName)
+	if username == "" {
+		return "", errors.New(errUserName)
 	}
 
 	//创建自定义的payload

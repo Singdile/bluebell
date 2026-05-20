@@ -13,15 +13,41 @@ import (
 
 
 
+// GetTotalPostCount 获取帖子总数
+func GetTotalPostCount(ctx *gin.Context) (int64,error) {
+	count,err := rdb.ZCard(ctx,KeyPostTimeZset).Result()
+	if err != nil {
+		zap.L().Error("Failed to get total post count from redis",zap.Error(err))
+		return 0,err
+	}
+
+	return count,nil
+}
+
+// GetCommunityPostCount 获取社区包含的帖子的总数
+func GetCommunityPostCount(ctx *gin.Context, communityid int64) (int64,error) {
+	// 构建社区保存的post_id 的无序集合 key
+	key := KeyPostCommunitySetPrefix + strconv.FormatInt(communityid,10)
+
+	// 统计无序集合的数量
+	count,err := rdb.SCard(ctx,key).Result()
+	if err != nil {
+		zap.L().Error("Failed to get total post count from redis for community",zap.Error(err))
+		return 0,err
+	}
+
+	return count,nil
+}
+
+
 // GetPostIDs 获取指定范围，排序后的帖子 post_id 列表
-func GetPostIDs(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error){
+func GetPostIDs(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error) {
 	if postquery.CommunityID == 0 {
 		return getPostIDsInOrder(ctx, postquery)
 	} else {
-		return getPostIDsInOrderByCom(ctx,postquery)
+		return getPostIDsInOrderByCom(ctx, postquery)
 	}
 }
-
 
 // getPostIDsInOrder 获取全局指定范围内的帖子
 func getPostIDsInOrder(ctx *gin.Context, postquery *models.ParamPostQuery) ([]string, error) {
@@ -45,7 +71,7 @@ func getPostIDsInOrderByCom(ctx *gin.Context, query *models.ParamPostQuery) ([]s
 	deskey := KeyCommunityZsetPF + query.Order + strconv.FormatInt(query.CommunityID, 10)
 
 	// 检查 key 对应的 zset是否存在，存在直接查询;不存在则构造
-	if  rdb.Exists(ctx, deskey).Val() < 1 {//无缓存
+	if rdb.Exists(ctx, deskey).Val() < 1 { //无缓存
 		pipeline := rdb.TxPipeline()
 		// communityset 和 KeyPostScoreZset 进行交集操作
 		pipeline.ZInterStore(ctx, deskey, &redis.ZStore{

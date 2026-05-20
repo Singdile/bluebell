@@ -16,6 +16,9 @@ type Post struct {
 	CommunityID int64     `json:"community_id,string" db:"community_id" binding:"required"`
 	Status      int32     `json:"status" db:"status"`
 	CreateTime  time.Time `json:"create_time" db:"create_time"`
+	Score       int64     `json:"score" db:"score"`
+	VoteP       int64     `json:"vote_p" db:"vote_p"`
+	VoteN       int64     `json:"vote_n" db:"vote_n"`
 }
 
 // PostDetail 表示帖子的详情信息，有关联的作者名称，社区
@@ -37,6 +40,8 @@ type PostListItem struct {
 	CommunityName  string    `json:"community_name" db:"community_name"`
 	Status         int32     `json:"status" db:"status"`
 	CreateTime     time.Time `json:"create_time" db:"create_time"`
+	VoteP          int64     `json:"vote_p,string" db:"vote_p"`
+	VoteN          int64     `json:"vote_n,string" db:"vote_n"`
 }
 
 // 用于post分页响应
@@ -46,6 +51,4 @@ type PostListResponse struct {
 	PageSize   int64           `json:"page_size,string"`   //每页数量
 	TotalPages int64           `json:"total_pages,string"` //总页数
 	List       []*PostListItem `json:"list"`               //帖子列表
-	VoteP      []string         `json:"vote_p"`
-	VoteN      []string        `json:"vote_n"`
 }

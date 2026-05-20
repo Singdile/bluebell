@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"bluebell/dao/mysql"
 	"bluebell/models"
 	"errors"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 )
 
 const oneWeekInSeconds = float64(24 * 3600 * 7)
-const ErrVoteTimeExpired = "投票时间已经过了"
+var ErrVoteTimeExpired = errors.New("投票时间已经过了")
 
 // 投票功能实现：
 // 1.用户投票 (用户向帖子投票)
@@ -45,13 +46,15 @@ direction = -1
 -删除与帖子关联的用户信息
 */
 
-// TODO 完成投票
+
+
+// VotePost  完成投票
 func VotePost(ctx *gin.Context, user_id, post_id string, direction float64) error {
 	//判断投票的限制  超时n不能投票
 	posttime := rdb.ZScore(ctx, KeyPostTimeZset, post_id).Val()
 
 	if float64(time.Now().Unix()) > oneWeekInSeconds+posttime {
-		return errors.New(ErrVoteTimeExpired)
+		return ErrVoteTimeExpired
 	}
 
 	//获取用户之前的投票情况,如果没有投过，返回的是零值
@@ -83,7 +86,22 @@ func VotePost(ctx *gin.Context, user_id, post_id string, direction float64) erro
 
 	// 4.提交执行
 	_, err := pipe.Exec(ctx)
-	return err
+
+	if err != nil {
+		return err
+	}
+
+	// 5.异步更新 Mysql中的post 的score 和 投票信息
+	postIDint, _ := strconv.ParseInt(post_id, 10, 64)
+	mysql.PushScoreUpdate(postIDint, int64(changescore))
+
+	// 查看 Redis 获取最新的投票信息，推送到mysql同步队列
+	votep := rdb.ZCount(ctx, KeyPostVotedZsetPrefix+post_id,"1","1").Val()
+	voten := rdb.ZCount(ctx, KeyPostVotedZsetPrefix+post_id,"-1","-1").Val()
+	mysql.PushVoteUpdate(postIDint,votep,voten)
+
+
+	return nil
 }
 
 // CreatePost 同步记录创建的post
@@ -91,26 +109,27 @@ func CreatePost(ctx *gin.Context, post *models.Post) error {
 	//开启pipeline事务操作，pipe负责一次发送，事务负责原子化操作
 	pipe := rdb.TxPipeline()
 
-	//记录创建的post_id, create_time
+	//记录创建的post_id, create_time;  按时间排序的zset
 	pipe.ZAdd(ctx, KeyPostTimeZset, redis.Z{
 		Score:  float64(post.CreateTime.Unix()),
 		Member: fmt.Sprintf("%v", post.ID),
 	})
 
-	//记录创建时的分数，默认为创建的时间
+	//记录创建时的分数，默认为创建的时间  按分数排序的zset
 	pipe.ZAdd(ctx, KeyPostScoreZset, redis.Z{
-		Score:  float64(post.CreateTime.Unix()),
+		Score:  float64(post.Score),
 		Member: fmt.Sprintf("%v", post.ID),
 	})
 
 	//记录在对应的community的set下面
-	key := KeyPostCommunitySetPrefix + strconv.FormatInt(post.CommunityID,10)
-	pipe.SAdd(ctx, key,fmt.Sprintf("%v",post.ID) )
+	key := KeyPostCommunitySetPrefix + strconv.FormatInt(post.CommunityID, 10)
+	pipe.SAdd(ctx, key, fmt.Sprintf("%v", post.ID))
 
 	_, err := pipe.Exec(ctx)
 
 	if err != nil {
 		zap.L().Error("redis add KeyPostTimeZset or KeyPostScoreZset failed", zap.Error(err), zap.Int64("post_id", post.ID))
+		return err
 	}
 
 	return nil

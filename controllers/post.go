@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"bluebell/dao/redis"
 	"bluebell/logic"
 	"bluebell/models"
 	"bluebell/models/dto"
-	"net/http"
+	"errors"
+
 	"strconv"
 
 	"fmt"
@@ -41,9 +43,10 @@ func PostHandler(ctx *gin.Context) {
 		if ok {
 			//ValidatorErros,翻译之后再返回
 			if trans != nil {
-				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
+				// validator.ValidationErrors, errs 是一个切片
+				Fail(ctx, ErrValidation, errs[0].Translate(trans))
 			} else {
-				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Error()})
+				Fail(ctx, ErrValidation, errs[0].Error())
 			}
 			return
 		} else { // ok == false  表示是JSON格式错误
@@ -232,7 +235,6 @@ func GetPostListByCommunity(ctx *gin.Context) {
 		CommunityID: 0,
 	}
 
-
 	// 绑定更新传递的query参数，部分绑定成功的会改变数据
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		zap.L().Error(
@@ -246,10 +248,10 @@ func GetPostListByCommunity(ctx *gin.Context) {
 	}
 
 	// 使用内部的model
-	defaultquery := &models.ParamPostQuery {
-		Page: req.Page,
-		Pagesize: req.Pagesize,
-		Order: req.Order,
+	defaultquery := &models.ParamPostQuery{
+		Page:        req.Page,
+		Pagesize:    req.Pagesize,
+		Order:       req.Order,
 		CommunityID: req.CommunityID,
 	}
 
@@ -280,21 +282,40 @@ func GetPostListByCommunity(ctx *gin.Context) {
 // @Failure 500 {object} dto.ErrorResponse "服务器内部错误"
 // @Router /v1/vote [post]
 func PostVote(ctx *gin.Context) {
-	//参数校验
+	// 使用dto来接受请求数据
+	var req dto.VoteRequest
+
 	//用户id,帖子id,投票类型
-	p := new(models.ParamVote)
-	if err := ctx.ShouldBindJSON(p); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		zap.L().Error("参数绑定错误", zap.Error(err))
 		// ValidationErrors 表示参数验证错误，比如投票参数非1,-1,0
 		errs, ok := err.(validator.ValidationErrors) //接口类型断言
-		if !ok {
+		if ok {
 			Fail(ctx, ErrValidation, fmt.Sprintf("%v", errs.Translate(trans)))
 			return
 		}
 
 		//josn格式有问题 无法绑定
+		FailWithDefault(ctx, ErrInvalidJSON)
 		return
 
+	}
+
+	// 转换前端传递的投票情况  up down cancel
+	var direction int
+	switch req.Action {
+	case "up":
+		direction = 1
+	case "down":
+		direction = -1
+	case "cancel":
+		direction = 0
+	}
+
+	// 转换为内部模型
+	p := &models.ParamVote {
+		PostID: req.PostID,
+		Direction:direction,
 	}
 
 	user_id, err := getCurrentUser(ctx)
@@ -306,7 +327,14 @@ func PostVote(ctx *gin.Context) {
 	//业务处理，用户投票
 	if err := logic.VotePost(ctx, user_id, p); err != nil {
 		zap.L().Error("logic.VotePost() failed", zap.Error(err))
+
+		// 判断是否是投票过期错误
+		if errors.Is(err,redis.ErrVoteTimeExpired) {
+			Fail(ctx,ErrValidation,"投票时间已过，该帖子已经超过7天了")
+			return
+		}
 		FailWithDefault(ctx, ErrInternal) //500,服务器内部错误
+		return
 	}
 
 	// 成功，返回响应

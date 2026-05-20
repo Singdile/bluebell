@@ -4,7 +4,7 @@ import (
 	"bluebell/logic"
 	"bluebell/models"
 	"bluebell/pkg/jwt"
-	"net/http"
+	"errors"
 
 	"bluebell/models/dto"
 	"github.com/gin-gonic/gin"
@@ -39,9 +39,9 @@ func SignUp(ctx *gin.Context) {
 		if ok {
 			//ValidatorErros,翻译之后再返回
 			if trans != nil {
-				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Translate(trans)})
+				Fail(ctx,ErrValidation,errs[0].Translate(trans))
 			} else {
-				ctx.JSON(http.StatusOK, gin.H{"msg": errs.Error()})
+				Fail(ctx,ErrValidation,errs.Error())
 			}
 			return
 		} else { // ok == false  表示是JSON格式错误
@@ -52,14 +52,19 @@ func SignUp(ctx *gin.Context) {
 	}
 
 	// 转换为内部的 model
-	param := &models.ParamSignUp {
-		Username: req.Username,
-		Password: req.Password,
+	param := &models.ParamSignUp{
+		Username:   req.Username,
+		Password:   req.Password,
 		Repassword: req.RePassword,
 	}
 
 	//业务处理, 用户注册
 	if err := logic.SignUp(param); err != nil {
+		// 判断是否是用户已存在错误
+		if errors.Is(err, logic.ErrUserExists) {
+			FailWithDefault(ctx, ErrUserExists)
+			return
+		}
 		zap.L().Error("插入用户数据失败", zap.Error(err))
 		//返回响应,服务器内部错误
 		FailWithDefault(ctx, ErrInternal)
@@ -85,7 +90,6 @@ func Login(ctx *gin.Context) {
 	// 使用DTO接收请求
 	var req dto.LoginRequest
 
-
 	if err := ctx.ShouldBind(&req); err != nil {
 		zap.L().Error("参数绑定失败", zap.Error(err))
 
@@ -104,11 +108,10 @@ func Login(ctx *gin.Context) {
 	}
 
 	// 转换为内部的 ParamLogin Model
-	param := &models.ParamLogin {
+	param := &models.ParamLogin{
 		Username: req.Username,
 		Password: req.Password,
 	}
-
 
 	// 业务逻辑处理
 	// 验证用户信息是否合法
