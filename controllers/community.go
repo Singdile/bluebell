@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"bluebell/logic"
+	"bluebell/models"
+	"bluebell/models/dto"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +12,7 @@ import (
 
 // -----所有和社区相关的-----
 
-// CommunityHandler 查询所有的社区，以(community_id, community_name)的形式返回
+// CommunityHandler 查询所有的社区，以(id, community_name)的形式返回
 // @Summary 获取社区列表
 // @Description 获取所有社区的列表信息
 // @Tags 社区
@@ -53,7 +55,7 @@ func CommunityByID(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idstr, 10, 64)
 
 	if err != nil {
-		zap.L().Error("Invalid community_id parameter", zap.String("id", idstr),
+		zap.L().Error("Invalid communityid parameter", zap.String("id", idstr),
 			zap.Error(err))
 		Fail(ctx, ErrValidation, "无效的社区ID")
 		return
@@ -70,4 +72,71 @@ func CommunityByID(ctx *gin.Context) {
 	}
 	//返回响应
 	Success(ctx, communitydetail)
+}
+
+
+// CreateCommunity 创建社区
+func CreateCommunity(ctx *gin.Context) {
+	// 利用dto 获取参数
+	var req dto.CreateCommunityRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		Fail(ctx,ErrValidation,"参数验证失败")
+		return
+	}
+
+	// 构造内部所需要的模型
+	userid,err := getCurrentUser(ctx)
+	if err != nil {
+		Fail(ctx, ErrLoginFailed, "用户未登录")
+		return
+	}
+
+	community := &models.Community {
+		Name: req.CommunityName,
+		Introduction: req.Introduction,
+		CreatorID: userid,
+		Status: 1,
+	}
+	// 业务处理
+	var id int64
+	if id,err = logic.CreateCommunity(community); err != nil {
+		zap.L().Error("Failed to create community in mysql",zap.Error(err),zap.Any("community info",community))
+		Fail(ctx,ErrInternal,err.Error())
+		return
+	}
+
+
+	// 返回响应
+	Success(ctx, gin.H {
+		"community_id": id,
+	})
+	return
+}
+
+// UpdateCommunity 更新社区数据，这里主要是社区的名称和描述信息
+func UpdateCommunity(ctx *gin.Context) {
+	// 获取请求参数
+	var req dto.UpdateCommunityRequest
+
+	if err:= ctx.ShouldBindJSON(&req); err != nil {
+		Fail(ctx,ErrValidation,"参数验证错误")
+		return
+	}
+
+	// 转换为内部的模型
+	community := &models.Community {
+		ID: req.ID,
+		Name: req.CommunityName,
+		Introduction: req.Introduction,
+	}
+
+	// 业务处理
+	if err := logic.UpdateCommunity(community); err != nil {
+		Fail(ctx,ErrInternal,err.Error())
+		return
+	}
+
+	// 返回响应
+	Success(ctx,nil)
+	return
 }

@@ -89,7 +89,7 @@ func GetPostDetailByID(post_id int64) (postdetail *models.PostDetail, err error)
         c.introduction AS introduction
     FROM post p
     LEFT JOIN user u ON p.author_id = u.user_id
-    LEFT JOIN community c ON p.community_id = c.community_id
+    LEFT JOIN community c ON p.community_id = c.id
     WHERE p.post_id = ?
 `
 	//查询
@@ -205,7 +205,7 @@ func GetPostListByIDs(post_ids []string, community_id int64) ([]*models.PostList
     p.vote_n AS vote_n
     FROM post p
     LEFT JOIN user u ON p.author_id = u.user_id
-    LEFT JOIN community c ON p.community_id = c.community_id
+    LEFT JOIN community c ON p.community_id = c.id
     WHERE p.post_id IN (?)
     ORDER BY FIND_IN_SET(p.post_id, ?)
     `

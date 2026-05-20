@@ -37,3 +37,18 @@ type PostListRequest struct {
 	Order       string `json:"order" form:"order" example:"time"` // time 或 score
 	CommunityID int64  `json:"community_id" form:"community_id" example:"1"`
 }
+
+// =============社区请求=============
+
+// CreateCommunityRequest 创建社区请求参数
+type CreateCommunityRequest struct {
+	CommunityName string `json:"community_name" binding:"required"`
+	Introduction  string `json:"introduction" binding:"required"`
+}
+
+// UpdateCommunityRequest 更新社区请求参数
+type UpdateCommunityRequest struct {
+	ID            int64  `json:"id" binding:"required"`
+	CommunityName string `json:"community_name" binding:"required"`
+	Introduction  string `json:"introduction" binding:"required"`
+}

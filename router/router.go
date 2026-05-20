@@ -46,9 +46,12 @@ func SetupRouter() (r *gin.Engine) {
 	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware(),  middlewares.RateLimitMiddleware(5, 10))
 
 	{
-		//获取社区列表
-		v1.GET("/community", controllers.CommunityHandler)
-		v1.GET("/community/:id", controllers.CommunityByID)
+		//社区CRUD
+		v1.GET("/community", controllers.CommunityHandler) //查询社区列表
+		v1.GET("/community/:id", controllers.CommunityByID) //查询社区详细信息
+		v1.POST("/community",controllers.CreateCommunity) // 创建社区
+		v1.PUT("/community", controllers.UpdateCommunity) //更新社区
+		// v1.DELETE("/community",controllers.DeleteCommunity) //删除社区
 
 		v1.POST("/post", controllers.PostHandler)
 		v1.GET("/post/:id", controllers.GetPostDetailByID)
