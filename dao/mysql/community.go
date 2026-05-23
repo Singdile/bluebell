@@ -10,9 +10,18 @@ import (
 
 // GetCommunityList 查询数据库中的社区数据，返回列表数据
 func GetCommunityList() (data []*models.Community, err error) {
-	sqlstr := "select id, community_name from community"
+	sqlstr := "select id, community_name,introduction from community"
 
 	err = db.Select(&data, sqlstr)
+
+	 // 添加调试日志
+	if len(data) > 0 {
+		zap.L().Debug("GetCommunityList result",
+			zap.Int("count", len(data)),
+			zap.Int64("first_id", data[0].ID),
+			zap.String("first_name", data[0].Name),
+			zap.String("first_introduction", data[0].Introduction))
+	}
 
 	if err != nil {
 		if err == sql.ErrNoRows {

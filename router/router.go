@@ -46,6 +46,9 @@ func SetupRouter() (r *gin.Engine) {
 	v1 := r.Group("/v1", middlewares.JwtAuthMiddleware(),  middlewares.RateLimitMiddleware(5, 10))
 
 	{
+		// TODO: 修改的权限认证
+		// TODO: 帖子留言评论功能
+
 		//社区CRUD
 		v1.GET("/community", controllers.CommunityHandler) //查询社区列表
 		v1.GET("/community/:id", controllers.CommunityByID) //查询社区详细信息

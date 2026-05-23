@@ -10,7 +10,7 @@ all: tidy build
 # 3. 基础开发指令 (Build, Run, Test)
 build:
 	@echo "=> 🚀 正在构建二进制文件 [$(APP_NAME)]..."
-	go build -o $(APP_NAME) main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o $(APP_NAME) main.go
 
 run:
 	@echo "=> ⚡ 正在启动应用..."

@@ -109,8 +109,8 @@ definitions:
         example: up
         type: string
       post_id:
-        example: 1
-        type: integer
+        example: "1"
+        type: string
     required:
     - action
     - post_id
@@ -140,10 +140,16 @@ definitions:
       id:
         example: "0"
         type: string
+      score:
+        type: integer
       status:
         type: integer
       title:
         type: string
+      vote_n:
+        type: integer
+      vote_p:
+        type: integer
     required:
     - community_id
     - content
@@ -181,6 +187,12 @@ definitions:
       status:
         type: integer
       title:
+        type: string
+      vote_n:
+        example: "0"
+        type: string
+      vote_p:
+        example: "0"
         type: string
     type: object
 host: localhost:8080

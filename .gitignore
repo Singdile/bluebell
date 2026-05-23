@@ -1,14 +1,67 @@
-/app.log
-/test_router.go.bak
-bluebell
-*.log
-test.log
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# Emacs
-.#*
-*~
-\#*\#
-.#*#
-test.lgo
-test.log
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# Build output
+bin/
 bluebell
+# Frontend dist should be committed for deployment
+# dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.production.local
+
+# Local development config
+settings/config.yaml
+
+# Logs
+logs/
+*.log
+
+# Docker volumes
+nginx-logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Database backups
+*.sql
+!migrations/*.sql
+
+# Uploaded files
+uploads/
+
+# Frontend dependencies
+frontend/node_modules/
+
+# Frontend environment files (keep templates)
+frontend/.env.local

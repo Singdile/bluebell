@@ -2,19 +2,16 @@ app:
   appname: "bluebell"
   version: "v0.0.1"
   port: 8080
-
 log:
-  filename: "./test.log"
+  filename: "./logs/bluebell.log" #项目根目录下  ./logs/bluebell.log
   level: "info"
   mode: "prod"
-
 mysql:
   user: "root"
   password: "bluebell321"
   host: "mysql"
   port: 3306
   dbname: "bluebell"
-
 redis:
   host: "redis"
   port: 6379
@@ -22,11 +19,9 @@ redis:
   poolsize: 20
   protocol: 2
   db: 0
-
 snowflake:
   start_time: "2026-04-28"
   machine_id: 1
-
 cros:
   allow_origins:
     - "http://localhost:3000"

@@ -1,37 +1,120 @@
+# BlueBell Docker Compose 配置
+# 使用方法：
+#   1. 复制 .env.example 为 .env 并修改配置
+#   2. 运行 docker compose up -d
 services:
-  backend:
-    build: . # 读取当前目录下的 Dockerfile 进行镜像构建
+  # ==================== Nginx 反向代理 ====================
+  nginx:
+    image: nginx:1.31-alpine
+    container_name: bluebell-nginx
+    restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "80:80" # HTTP 端口
+      - "443:443" # HTTPS 端口（需要配置 SSL）
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend/dist:/var/www/bluebell:ro
+      - ./nginx-logs:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - bluebell-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  # ==================== 数据库迁移 ====================
+  migrate:
+    image: migrate/migrate:v4.17.0
+    container_name: bluebell-migrate
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "mysql://root:${MYSQL_ROOT_PASSWORD:-bluebell321}@tcp(mysql:3306)/bluebell", "up"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - bluebell-network
+    restart: "no" # 一次性任务，不自动重启
+  # ==================== Go 后端服务 ====================
+  backend:
+    image: singdile/bluebell:v1.0.0
+    container_name: bluebell-backend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080" # 仅本地访问，通过 Nginx 代理对外服务
     environment:
+      - BLUEBELL_MODE=${BLUEBELL_MODE:-release}
       - CONFIG_NAME=config.docker
     depends_on:
-      - mysql # 依赖，确保mysql 容器启动之后，再启动backend
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
-      - bluebell-net # 加入自定义的网络，使得多个容器可以通过 "服务名" 当作域名来通信
+      - bluebell-network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/v1/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  # ==================== MySQL 数据库 ====================
   mysql:
     image: mysql:8.0
+    container_name: bluebell-mysql
+    restart: unless-stopped
     ports:
-      - "13306:3306"
+      - "127.0.0.1:13306:3306" # 仅本地访问
     environment:
-      - MYSQL_ROOT_PASSWORD=bluebell321 # 设置root密码
-      - MYSQL_DATABASE=bluebell # 创建一个名为 bluebell 的数据库
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-bluebell321}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-bluebell}
+      - MYSQL_USER=${MYSQL_USER:-bluebell}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-bluebell321}
+      - MYSQL_ROOT_HOST=%
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
-      - mysql_data:/var/lib/mysql # 挂载卷：将mysql数据映射到主机，数据持久化保持
+      - mysql_data:/var/lib/mysql
     networks:
-      - bluebell-net
+      - bluebell-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-bluebell321}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  # ==================== Redis 缓存 ====================
   redis:
     image: redis:7-alpine
+    container_name: bluebell-redis
+    restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379" # 仅本地访问
     volumes:
       - redis_data:/data
     networks:
-      - bluebell-net
+      - bluebell-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["redis-server", "--appendonly", "yes"]
+# ==================== 数据卷定义 ====================
 volumes:
   mysql_data:
+    driver: local
   redis_data:
+    driver: local
+# ==================== 网络定义 ====================
 networks:
-  bluebell-net:
+  bluebell-network:
     driver: bridge

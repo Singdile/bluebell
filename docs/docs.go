@@ -656,8 +656,8 @@ const docTemplate = `{
                     "example": "up"
                 },
                 "post_id": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -702,11 +702,20 @@ const docTemplate = `{
                     "type": "string",
                     "example": "0"
                 },
+                "score": {
+                    "type": "integer"
+                },
                 "status": {
                     "type": "integer"
                 },
                 "title": {
                     "type": "string"
+                },
+                "vote_n": {
+                    "type": "integer"
+                },
+                "vote_p": {
+                    "type": "integer"
                 }
             }
         },
@@ -757,6 +766,14 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "vote_n": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "vote_p": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         }
