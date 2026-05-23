@@ -1,0 +1,1 @@
+import{J as u}from"./index-Cx_jyXMd.js";function n(){return u({url:"/v1/community",method:"get"})}function o(t){return u({url:`/v1/community/${t}`,method:"get"})}function e(t){return u({url:"/v1/community",method:"post",data:t})}function r(t){return u({url:"/v1/community",method:"put",data:t})}export{o as a,e as c,n as g,r as u};
